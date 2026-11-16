@@ -1,6 +1,6 @@
 /* ==========================================================================
    MINIMALIST TODO // STYLESHEET
-   Clean · Handcrafted · Tactile · Subtle Micro-Interactions
+   Clean · Handcrafted · Tactile · Zero Visual Noise
    ========================================================================== */
 
 * {
@@ -10,8 +10,13 @@
 }
 
 ::selection {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.2);
   color: var(--text-bright);
+}
+
+[data-theme="light"] ::selection {
+  background: rgba(0, 0, 0, 0.15);
+  color: #000000;
 }
 
 html, body {
@@ -24,9 +29,10 @@ html, body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 200ms ease, color 200ms ease;
 }
 
-/* Base interactive elements */
+/* Base button */
 button {
   font-family: inherit;
   font-size: 12.5px;
@@ -38,7 +44,7 @@ button {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transition: all 160ms var(--ease);
+  transition: all 150ms var(--ease);
   user-select: none;
 }
 
@@ -54,7 +60,7 @@ input, select {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   outline: none;
-  transition: border-color 160ms var(--ease), background-color 160ms var(--ease);
+  transition: border-color 150ms ease, background-color 150ms ease;
 }
 
 input:focus, select:focus {
@@ -69,7 +75,7 @@ input::placeholder {
    HEADER
    ========================================================================== */
 .site-header {
-  height: 54px;
+  height: 52px;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -77,7 +83,7 @@ input::placeholder {
   padding: 0 24px;
   position: sticky;
   top: 0;
-  background-color: rgba(7, 7, 9, 0.88);
+  background-color: var(--bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   z-index: 40;
@@ -102,7 +108,7 @@ input::placeholder {
 }
 
 .brand-title {
-  font-size: 14px;
+  font-size: 14.5px;
   font-weight: 550;
   letter-spacing: -0.02em;
   color: var(--text-bright);
@@ -115,12 +121,12 @@ input::placeholder {
 }
 
 .btn-icon {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
   background: transparent;
-  transition: all 150ms var(--ease);
+  transition: all 140ms var(--ease);
 }
 
 .btn-icon:hover {
@@ -129,8 +135,8 @@ input::placeholder {
 }
 
 .btn-icon svg {
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
 }
 
 .btn-guide-trigger {
@@ -153,26 +159,6 @@ input::placeholder {
   transform: translateY(-0.5px);
 }
 
-.active-count-badge {
-  font-size: 11.5px;
-  color: var(--text-secondary);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: 4px 9px;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.pulse-indicator {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #34d399;
-  box-shadow: 0 0 6px rgba(52, 211, 153, 0.5);
-}
-
 /* ==========================================================================
    APP CONTAINER
    ========================================================================== */
@@ -183,7 +169,7 @@ input::placeholder {
 }
 
 /* ==========================================================================
-   TASK CREATOR PANEL (COMPACT & BEAUTIFUL)
+   TASK CREATOR PANEL (COMPACT & INTUITIVE)
    ========================================================================== */
 .task-creator {
   background: var(--surface-card);
@@ -194,13 +180,13 @@ input::placeholder {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   transition: border-color 180ms var(--ease), box-shadow 180ms var(--ease);
 }
 
 .task-creator:focus-within {
   border-color: var(--border-light);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
 }
 
 .creator-main-row {
@@ -227,20 +213,18 @@ input::placeholder {
   color: var(--btn-primary-text);
   font-weight: 500;
   font-size: 12px;
-  padding: 6px 12px;
+  padding: 6px 13px;
   border-radius: var(--radius-sm);
   white-space: nowrap;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .btn-add:hover {
   background: var(--btn-primary-hover);
   transform: translateY(-0.5px);
-  box-shadow: 0 3px 10px rgba(255, 255, 255, 0.12);
 }
 
 .btn-add:active {
-  transform: scale(0.97);
+  transform: scale(0.98);
 }
 
 .creator-meta-row {
@@ -260,8 +244,7 @@ input::placeholder {
   flex-wrap: wrap;
 }
 
-.chip-select-wrap,
-.chip-date-wrap {
+.chip-select-wrap {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -269,7 +252,7 @@ input::placeholder {
 
 .chip-select {
   font-size: 11.5px;
-  padding: 3px 8px 3px 24px;
+  padding: 4px 8px 4px 24px;
   background-color: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -297,26 +280,115 @@ input::placeholder {
   pointer-events: none;
 }
 
-.chip-date {
+/* Convenient Date Selector Chip & Popover */
+.date-selector-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.chip-date-btn {
   font-size: 11.5px;
-  padding: 3px 8px 3px 24px;
+  padding: 4px 9px;
   background-color: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
-  cursor: pointer;
-  color-scheme: dark;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   transition: all 150ms var(--ease);
 }
 
-.chip-date:hover {
+.chip-date-btn:hover {
   color: var(--text-main);
   border-color: var(--border-light);
 }
 
+.chip-date-btn.has-date {
+  color: var(--text-bright);
+  background: var(--surface-raised);
+  border-color: var(--border-light);
+}
+
+.chip-date-btn svg {
+  width: 12px;
+  height: 12px;
+  color: var(--text-muted);
+}
+
+.date-clear-icon {
+  margin-left: 2px;
+  opacity: 0.6;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.date-clear-icon:hover {
+  opacity: 1;
+  color: var(--danger-color);
+}
+
+/* Date Popover */
+.date-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  background: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 8px;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 170px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  z-index: 50;
+  animation: popoverFade 140ms var(--ease);
+}
+
+.date-popover.open {
+  display: flex;
+}
+
+@keyframes popoverFade {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.date-preset-btn {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: var(--radius-xs);
+  color: var(--text-main);
+  text-align: left;
+}
+
+.date-preset-btn:hover {
+  background: var(--surface-hover);
+  color: var(--text-bright);
+}
+
+.date-custom-input {
+  width: 100%;
+  padding: 5px 8px;
+  font-size: 11.5px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color-scheme: dark;
+  margin-top: 4px;
+}
+
+[data-theme="light"] .date-custom-input {
+  color-scheme: light;
+}
+
+/* Flag Urgent Button */
 .chip-flag-btn {
   font-size: 11.5px;
-  padding: 3px 9px;
+  padding: 4px 9px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -340,14 +412,8 @@ input::placeholder {
   height: 11px;
 }
 
-.creator-hint {
-  font-size: 10.5px;
-  font-family: var(--font-mono);
-  color: var(--text-muted);
-}
-
 /* ==========================================================================
-   TOOLBAR (SEGMENTED TABS & SEARCH)
+   TOOLBAR (TABS & ONLY SINGLE MAGNIFYING GLASS)
    ========================================================================== */
 .toolbar {
   display: flex;
@@ -361,7 +427,7 @@ input::placeholder {
   display: flex;
   align-items: center;
   gap: 2px;
-  background: #0b0b0e;
+  background: var(--surface);
   border: 1px solid var(--border);
   padding: 2px;
   border-radius: 8px;
@@ -380,9 +446,9 @@ input::placeholder {
 }
 
 .tab-btn.active {
-  background: #171720;
+  background: var(--surface-raised);
   color: var(--text-bright);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .tab-count {
@@ -396,37 +462,61 @@ input::placeholder {
   color: var(--text-secondary);
 }
 
-.search-box {
-  position: relative;
+/* Sleek Single Magnifying Glass Search Container */
+.search-single-wrap {
   display: flex;
   align-items: center;
+  gap: 4px;
+  position: relative;
 }
 
-.search-icon-svg {
-  position: absolute;
-  left: 9px;
-  width: 12px;
-  height: 12px;
-  color: var(--text-muted);
-  pointer-events: none;
+.btn-search-trigger {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+  transition: all 150ms var(--ease);
 }
 
-.search-input {
-  padding: 4px 8px 4px 26px;
-  width: 135px;
+.btn-search-trigger:hover,
+.btn-search-trigger.active {
+  color: var(--text-bright);
+  background: var(--surface-raised);
+  border-color: var(--border);
+}
+
+.btn-search-trigger svg {
+  width: 14px;
+  height: 14px;
+}
+
+.search-expand-input {
+  width: 0;
+  opacity: 0;
+  padding: 4px 0;
   font-size: 12px;
+  border: 1px solid transparent;
   border-radius: 7px;
-  background-color: var(--surface-card);
-  transition: width 180ms var(--ease), border-color 150ms ease;
+  background-color: var(--surface);
+  pointer-events: none;
+  transition: width 180ms var(--ease), opacity 150ms ease, padding 150ms ease, border-color 150ms ease;
 }
 
-.search-input:focus {
-  width: 175px;
+.search-expand-input.open {
+  width: 150px;
+  opacity: 1;
+  padding: 4px 8px;
+  border-color: var(--border);
+  pointer-events: auto;
+}
+
+.search-expand-input.open:focus {
   border-color: var(--border-light);
 }
 
 /* ==========================================================================
-   TASK LIST & ITEMS
+   TASK LIST & ITEMS (CALM & SMOOTH, ZERO JITTER)
    ========================================================================== */
 .task-list {
   display: flex;
@@ -442,36 +532,23 @@ input::placeholder {
   display: flex;
   align-items: center;
   gap: 12px;
-  animation: taskAppear 180ms var(--ease) forwards;
-  transition: background-color 160ms var(--ease), border-color 160ms var(--ease), transform 160ms var(--ease), opacity 180ms ease;
-}
-
-@keyframes taskAppear {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  transition: background-color 140ms ease, border-color 140ms ease, opacity 140ms ease;
 }
 
 .task-item:hover {
   background: var(--surface-hover);
   border-color: var(--border-light);
-  transform: translateY(-0.5px);
 }
 
 .task-item.completed {
-  opacity: 0.38;
+  opacity: 0.4;
 }
 
 .task-item.completed:hover {
-  opacity: 0.72;
+  opacity: 0.75;
 }
 
-/* Tactile Checkbox */
+/* Calm, Smooth Checkbox (Zero shaking / zero bounce) */
 .checkbox-wrap {
   position: relative;
   width: 18px;
@@ -495,23 +572,22 @@ input::placeholder {
 .checkbox-custom {
   width: 18px;
   height: 18px;
-  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  border: 1.5px solid var(--border-light);
   border-radius: 5px;
   background: var(--bg);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 160ms var(--spring);
+  transition: background-color 120ms ease, border-color 120ms ease;
 }
 
 .checkbox-wrap:hover .checkbox-custom {
-  border-color: rgba(255, 255, 255, 0.35);
+  border-color: var(--border-focus);
 }
 
 .checkbox-native:checked + .checkbox-custom {
   background: var(--btn-primary-bg);
   border-color: var(--btn-primary-bg);
-  transform: scale(1.04);
 }
 
 .checkbox-custom svg {
@@ -546,7 +622,6 @@ input::placeholder {
   letter-spacing: -0.01em;
   color: var(--text-main);
   word-break: break-word;
-  transition: color 160ms ease;
 }
 
 .task-item.completed .task-title {
@@ -598,7 +673,7 @@ input::placeholder {
   align-items: center;
   gap: 2px;
   opacity: 0;
-  transition: opacity 150ms var(--ease);
+  transition: opacity 140ms ease;
 }
 
 .task-item:hover .task-actions {
@@ -611,13 +686,11 @@ input::placeholder {
   border-radius: var(--radius-xs);
   color: var(--text-secondary);
   padding: 0;
-  transition: all 140ms var(--ease);
 }
 
 .btn-icon-sm:hover {
   color: var(--text-bright);
   background: var(--surface-raised);
-  transform: scale(1.06);
 }
 
 .btn-icon-sm.delete:hover {
@@ -641,7 +714,7 @@ input::placeholder {
 }
 
 /* ==========================================================================
-   EMPTY STATE (SWEET & MINIMAL)
+   EMPTY STATE
    ========================================================================== */
 .empty-box {
   border: 1px dashed var(--border);
@@ -665,7 +738,6 @@ input::placeholder {
   align-items: center;
   justify-content: center;
   color: var(--text-muted);
-  margin-bottom: 2px;
 }
 
 .empty-icon-wrap svg {
@@ -685,7 +757,7 @@ input::placeholder {
 }
 
 /* ==========================================================================
-   FOOTER
+   FOOTER & BOTTOM CONTROLS
    ========================================================================== */
 .list-footer {
   margin-top: 22px;
@@ -698,10 +770,36 @@ input::placeholder {
   color: var(--text-secondary);
 }
 
+.footer-left-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-gear-settings {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-xs);
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 140ms ease;
+}
+
+.btn-gear-settings:hover {
+  color: var(--text-bright);
+  background: var(--surface-raised);
+}
+
+.btn-gear-settings svg {
+  width: 14px;
+  height: 14px;
+}
+
 .btn-clear {
   font-size: 11.5px;
   color: var(--text-secondary);
-  transition: color 140ms ease;
 }
 
 .btn-clear:hover {
@@ -709,7 +807,75 @@ input::placeholder {
 }
 
 /* ==========================================================================
-   TOAST NOTIFICATION (TACTILE UNDO)
+   SETTINGS MODAL (THEME & LANGUAGE)
+   ========================================================================== */
+.settings-dialog {
+  background: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 420px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+}
+
+.settings-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.settings-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.settings-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.settings-row-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.segmented-group {
+  display: flex;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.segmented-btn {
+  flex: 1;
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  transition: all 140ms ease;
+}
+
+.segmented-btn:hover {
+  color: var(--text-main);
+}
+
+.segmented-btn.active {
+  background: var(--surface-raised);
+  color: var(--text-bright);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* ==========================================================================
+   TOAST & OVERLAYS
    ========================================================================== */
 .toast-wrap {
   position: fixed;
@@ -733,12 +899,12 @@ input::placeholder {
   display: flex;
   align-items: center;
   gap: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
-  animation: toastFade 180ms var(--ease) forwards;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  animation: toastFade 140ms ease forwards;
 }
 
 @keyframes toastFade {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -749,13 +915,14 @@ input::placeholder {
   padding: 0;
 }
 
-/* ==========================================================================
-   INTERACTIVE ONBOARDING MODAL
-   ========================================================================== */
+[data-theme="light"] .btn-toast-undo {
+  color: var(--text-bright);
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: none;
@@ -763,7 +930,7 @@ input::placeholder {
   justify-content: center;
   z-index: 200;
   opacity: 0;
-  transition: opacity 180ms ease;
+  transition: opacity 160ms ease;
 }
 
 .modal-overlay.open {
@@ -779,13 +946,7 @@ input::placeholder {
   width: 90%;
   max-width: 480px;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
-  transform: translateY(6px);
-  transition: transform 200ms var(--ease);
-}
-
-.modal-overlay.open .guide-modal {
-  transform: translateY(0);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
 }
 
 .guide-header {
@@ -803,13 +964,13 @@ input::placeholder {
 }
 
 .guide-body {
-  padding: 20px 18px;
+  padding: 18px;
 }
 
 .guide-steps-progress {
   display: flex;
   gap: 6px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .progress-dot {
@@ -818,7 +979,7 @@ input::placeholder {
   background: var(--border);
   border-radius: 2px;
   cursor: pointer;
-  transition: background-color 200ms ease;
+  transition: background-color 160ms ease;
 }
 
 .progress-dot.active {
@@ -828,21 +989,15 @@ input::placeholder {
 .guide-slide {
   display: none;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .guide-slide.active {
   display: flex;
-  animation: slideFade 180ms var(--ease);
-}
-
-@keyframes slideFade {
-  from { opacity: 0; transform: translateX(6px); }
-  to { opacity: 1; transform: translateX(0); }
 }
 
 .slide-title {
-  font-size: 14.5px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-bright);
 }
@@ -857,8 +1012,8 @@ input::placeholder {
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 14px;
-  min-height: 120px;
+  padding: 12px;
+  min-height: 110px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -871,7 +1026,7 @@ input::placeholder {
   border: 1px solid var(--border-light);
   border-radius: var(--radius-sm);
   padding: 7px 10px;
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--text-main);
   display: flex;
   align-items: center;
@@ -897,25 +1052,18 @@ input::placeholder {
   display: flex;
   align-items: center;
   gap: 10px;
-  animation: simTaskAppear 0.3s var(--ease) forwards;
-}
-
-@keyframes simTaskAppear {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 .sim-checkbox {
   width: 16px;
   height: 16px;
-  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border: 1.5px solid var(--border-light);
   border-radius: 4px;
   background: var(--bg);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 140ms var(--spring);
 }
 
 .sim-checkbox.checked {
@@ -925,7 +1073,7 @@ input::placeholder {
 
 .sim-checkbox.checked svg {
   display: block;
-  stroke: #070709;
+  stroke: var(--btn-primary-text);
   width: 9px;
   height: 9px;
 }
@@ -939,7 +1087,6 @@ input::placeholder {
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.6);
 }
 
 .guide-footer {
@@ -985,7 +1132,6 @@ input::placeholder {
 
 .btn-nav-guide.secondary:hover {
   color: var(--text-bright);
-  background: var(--surface-hover);
 }
 
 @media (max-width: 540px) {
@@ -996,14 +1142,7 @@ input::placeholder {
     padding: 18px 12px 60px;
   }
   .toolbar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .search-input {
-    width: 100% !important;
-  }
-  .search-box {
-    width: 100%;
+    flex-wrap: wrap;
   }
   .task-actions {
     opacity: 1;

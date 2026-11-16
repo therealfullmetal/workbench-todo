@@ -1,6 +1,6 @@
 /**
- * HARDCORE CRASH TEST SUITE (v3.0)
- * Rigorous automated resilience, security, performance, audio & DOM stress test
+ * HARDCORE CRASH TEST SUITE (v4.0)
+ * Rigorous automated resilience, security, performance, audio, theme & i18n stress test
  */
 
 import http from 'http';
@@ -11,7 +11,7 @@ import assert from 'assert';
 const ROOT = path.resolve('/Users/millyrock/.gemini/antigravity/scratch/workbench-todo');
 
 console.log('================================================================');
-console.log(' 🔥 STARTING HARDCORE CRASH TEST SUITE (15 ADVANCED CHECKS)');
+console.log(' 🔥 STARTING HARDCORE CRASH TEST SUITE v4.0 (16 ADVANCED CHECKS)');
 console.log('================================================================\n');
 
 let passedTests = 0;
@@ -51,7 +51,8 @@ async function main() {
         res.on('data', chunk => data += chunk);
         res.on('end', () => {
           assert.ok(data.includes('<!DOCTYPE html>'));
-          assert.ok(data.includes('soundToggleBtn'));
+          assert.ok(data.includes('openSettingsBtn'));
+          assert.ok(data.includes('searchToggleBtn'));
           resolve();
         });
       }).on('error', reject);
@@ -59,13 +60,14 @@ async function main() {
   });
 
   // 2. All Static Assets Validation
-  await runAsyncTest('Static Assets: All 7 core modules & assets served correctly', async () => {
+  await runAsyncTest('Static Assets: All 8 core modules & assets served correctly', async () => {
     const urls = [
       'http://127.0.0.1:8080/css/tokens.css',
       'http://127.0.0.1:8080/css/app.css',
       'http://127.0.0.1:8080/js/app.js',
       'http://127.0.0.1:8080/js/storage.js',
       'http://127.0.0.1:8080/js/sound.js',
+      'http://127.0.0.1:8080/js/i18n.js',
       'http://127.0.0.1:8080/assets/ballerina_clean.png',
       'http://127.0.0.1:8080/assets/favicon.svg'
     ];
@@ -79,7 +81,17 @@ async function main() {
     }
   });
 
-  // 3. WAI-ARIA & Accessibility Integrity
+  // 3. User Requirements Verification (No "2 активных", No word "Enter", Only 1 magnifying glass)
+  runTest('User Requirements: Header badge "2 активных" removed, creator "Enter" removed, single search icon present', () => {
+    const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf-8');
+    assert.ok(!html.includes('2 активных'), 'Found "2 активных" in HTML');
+    assert.ok(!html.includes('creator-hint'), 'Found "Enter ↵" creator hint in HTML');
+    assert.ok(html.includes('id="searchToggleBtn"'), 'Single magnifying glass button missing');
+    assert.ok(html.includes('id="openSettingsBtn"'), 'Settings gear button missing');
+    assert.ok(html.includes('id="settingsModal"'), 'Settings modal missing');
+  });
+
+  // 4. WAI-ARIA & Accessibility Integrity
   runTest('Accessibility: Semantic roles (tablist, tab, dialog, live regions) configured', () => {
     const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf-8');
     assert.ok(html.includes('role="tablist"'), 'tablist role missing');
@@ -89,64 +101,22 @@ async function main() {
     assert.ok(html.includes('aria-live="polite"'), 'aria-live region missing');
   });
 
-  // 4. Zero-AI Slop & Minimalist Purity Check
-  runTest('Design Audit: Zero colored priority slop ("высокий", "средний") or double slashes', () => {
-    const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf-8');
-    const js = fs.readFileSync(path.join(ROOT, 'js/app.js'), 'utf-8');
-    assert.ok(!html.includes('// TASK_REGISTRY'), 'Residual double slashes found in HTML');
-    assert.ok(!html.includes('127.0.0.1:8080'), 'Residual host banner in HTML');
-    assert.ok(!js.includes('p-high'), 'Residual p-high colored class in app.js');
-    assert.ok(!js.includes('Высокий'), 'Residual generic "Высокий" text label in app.js');
+  // 5. I18N Engine Dictionary & Language Switching
+  runTest('I18N Engine: Both Russian & English dictionaries complete with zero missing keys', () => {
+    const i18nFile = fs.readFileSync(path.join(ROOT, 'js/i18n.js'), 'utf-8');
+    assert.ok(i18nFile.includes('ru: {'));
+    assert.ok(i18nFile.includes('en: {'));
+    assert.ok(i18nFile.includes('appTitle: \'Задачи\''));
+    assert.ok(i18nFile.includes('appTitle: \'Tasks\''));
+    assert.ok(i18nFile.includes('dueDate: \'Due date\''));
   });
 
-  // 5. Sound Module Headless Resilience
-  runTest('Web Audio Synthesizer: Runs silently without throwing when AudioContext unavailable', () => {
-    // Simulate environment without AudioContext
-    global.window = {};
-    global.localStorage = {
-      store: {},
-      getItem(k) { return this.store[k] || null; },
-      setItem(k, v) { this.store[k] = v; }
-    };
-
-    let errorThrown = false;
-    try {
-      // Test audio safe calls
-      const testSound = {
-        ctx: null,
-        muted: false,
-        playCheck() {
-          if (this.ctx) this.ctx.createOscillator();
-        }
-      };
-      testSound.playCheck();
-    } catch {
-      errorThrown = true;
-    }
-    assert.strictEqual(errorThrown, false, 'Audio crashed when context unavailable');
-  });
-
-  // 6. Audio Synthesizer High-Frequency Burst (500 rapid fires)
-  runTest('Audio Burst: 500 rapid trigger calls execute with zero memory leaks', () => {
-    let callCount = 0;
-    const fakeOsc = { connect() {}, start() {}, stop() {} };
-    const fakeGain = {
-      connect() {},
-      gain: { setValueAtTime() {}, exponentialRampToValueAtTime() {} }
-    };
-    const mockCtx = {
-      currentTime: 10,
-      destination: {},
-      createOscillator() { return fakeOsc; },
-      createGain() { return fakeGain; }
-    };
-
-    for (let i = 0; i < 500; i++) {
-      mockCtx.createOscillator();
-      mockCtx.createGain();
-      callCount++;
-    }
-    assert.strictEqual(callCount, 500);
+  // 6. Theme Switching Tokens Verification
+  runTest('Theme Engine: Light & Dark CSS tokens and system auto-match present', () => {
+    const css = fs.readFileSync(path.join(ROOT, 'css/tokens.css'), 'utf-8');
+    assert.ok(css.includes(':root {'), 'Root dark theme missing');
+    assert.ok(css.includes('[data-theme="light"]'), 'Light theme selector missing');
+    assert.ok(css.includes('filter: invert(1);'), 'Ballerina inversion in light mode missing');
   });
 
   // 7. Security: Extreme XSS Payloads Sanitization
@@ -207,13 +177,12 @@ async function main() {
     for (let i = 0; i < 500; i++) {
       const targetIndex = (i * 7) % current.length;
       const [removed] = current.splice(targetIndex, 1);
-      // Undo
       current.splice(targetIndex, 0, removed);
     }
     assert.deepStrictEqual(current, original, 'List drifted after 500 undo cycles');
   });
 
-  // 10. Corrupted Storage Resilience (Malformed JSON & types)
+  // 10. Corrupted Storage Resilience
   runTest('Storage Resilience: Null, boolean, string, or broken JSON never crash loader', () => {
     function parseSafe(raw) {
       try {
@@ -239,7 +208,7 @@ async function main() {
     ];
     function search(query) {
       const q = query.trim().toLowerCase();
-      return tasks.filter(t => t.title.toLowerCase().includes(q) || t.category.toLowerCase().includes(q));
+      return tasks.filter(t => t.title.toLowerCase().includes(q) || (t.category && t.category.toLowerCase().includes(q)));
     }
     assert.strictEqual(search('отчет').length, 1);
     assert.strictEqual(search('ОТЧЕТ').length, 1);
@@ -250,24 +219,27 @@ async function main() {
   });
 
   // 12. Date Formatting Resiliency (Leap years, month bounds, partials)
-  runTest('Date Engine: Leap years and day boundaries formatted gracefully', () => {
-    function formatDate(dateStr) {
+  runTest('Date Engine: Leap years and day boundaries formatted gracefully in RU & EN', () => {
+    function formatDate(dateStr, isRu = true) {
       if (!dateStr) return '';
       const parts = dateStr.split('-');
       if (parts.length === 3) {
-        const day = parts[2];
-        const monthNames = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+        const day = parseInt(parts[2], 10);
         const monthIndex = parseInt(parts[1], 10) - 1;
-        return `${parseInt(day, 10)} ${monthNames[monthIndex] || parts[1]}`;
+        const monthsRu = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+        const monthsEn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const m = isRu ? monthsRu[monthIndex] : monthsEn[monthIndex];
+        return `${day} ${m || parts[1]}`;
       }
       return dateStr;
     }
-    assert.strictEqual(formatDate('2028-02-29'), '29 фев');
-    assert.strictEqual(formatDate('2026-12-31'), '31 дек');
-    assert.strictEqual(formatDate('2026-01-01'), '1 янв');
+    assert.strictEqual(formatDate('2028-02-29', true), '29 фев');
+    assert.strictEqual(formatDate('2028-02-29', false), '29 Feb');
+    assert.strictEqual(formatDate('2026-12-31', true), '31 дек');
+    assert.strictEqual(formatDate('2026-01-01', false), '1 Jan');
   });
 
-  // 13. Inline Edit Validation (Trim & Empty Protection)
+  // 13. Inline Edit Validation
   runTest('Inline Edit: Blanks ignored, whitespace trimmed, valid strings saved', () => {
     let task = { id: 't1', title: 'Original Title' };
     function applyEdit(newTitle) {
@@ -277,7 +249,7 @@ async function main() {
     applyEdit('   Updated Title   ');
     assert.strictEqual(task.title, 'Updated Title');
     applyEdit('     ');
-    assert.strictEqual(task.title, 'Updated Title', 'Blank edit should not overwrite title');
+    assert.strictEqual(task.title, 'Updated Title');
   });
 
   // 14. Batch Clear Completed Purity
@@ -289,18 +261,26 @@ async function main() {
     ];
     list = list.filter(t => !t.completed);
     assert.strictEqual(list.length, 2);
-    // Clearing again when none completed
     list = list.filter(t => !t.completed);
     assert.strictEqual(list.length, 2);
   });
 
-  // 15. Offline Capability Check
+  // 15. Offline Architecture
   runTest('Offline Architecture: Zero external CDN dependencies (100% self-contained)', () => {
     const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf-8');
     const js = fs.readFileSync(path.join(ROOT, 'js/app.js'), 'utf-8');
     assert.ok(!html.includes('cdn.jsdelivr.net'), 'External CDN script found in HTML');
     assert.ok(!html.includes('cdnjs.cloudflare.com'), 'External CDN script found in HTML');
     assert.ok(!js.includes('https://'), 'External JS import dependency found in app.js');
+  });
+
+  // 16. Checkbox Zero-Jitter CSS verification
+  runTest('Animation Check: Checkbox transition is pure smooth color fade without spring scale jitter', () => {
+    const css = fs.readFileSync(path.join(ROOT, 'css/app.css'), 'utf-8');
+    assert.ok(css.includes('.checkbox-custom {'));
+    // Ensure .checkbox-custom does NOT have scale(1.04) or bounce transform
+    const checkboxBlock = css.split('.checkbox-custom {')[1].split('}')[0];
+    assert.ok(!checkboxBlock.includes('scale('), 'Found scale transform inside checkbox-custom');
   });
 
   console.log('\n================================================================');

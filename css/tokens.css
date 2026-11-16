@@ -1,11 +1,10 @@
 /* ==========================================================================
-   MINIMALIST EDITORIAL TOKENS
+   MINIMALIST EDITORIAL TOKENS (LIGHT & DARK THEMES)
    Inspired by Gunner Stahl · Rayymond · Rafik Greiss
-   Zero Cringe · Pure Handcrafted Craft · Subtle Micro-Interactions
    ========================================================================== */
 
 :root {
-  /* Canvas & Obsidian Surfaces */
+  /* Dark Theme (Default) */
   --bg: #070709;
   --surface: #0e0e12;
   --surface-raised: #15151b;
@@ -44,7 +43,7 @@
   --tag-border: rgba(255, 255, 255, 0.07);
   --tag-text: #9696a4;
 
-  /* Soft Tactile Radiuses */
+  /* Radiuses */
   --radius-xs: 4px;
   --radius-sm: 6px;
   --radius-md: 9px;
@@ -54,7 +53,90 @@
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", -system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", "Menlo", monospace;
 
-  /* Buttery Springs & Easing */
+  /* Transitions */
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Light Theme Variables */
+[data-theme="light"] {
+  --bg: #f6f6f8;
+  --surface: #ffffff;
+  --surface-raised: #f0f0f3;
+  --surface-hover: #f3f3f6;
+  --surface-card: #ffffff;
+
+  --border: rgba(0, 0, 0, 0.08);
+  --border-light: rgba(0, 0, 0, 0.14);
+  --border-focus: rgba(0, 0, 0, 0.3);
+
+  --text-bright: #09090b;
+  --text-main: #18181b;
+  --text-secondary: #71717a;
+  --text-muted: #a1a1aa;
+  --text-faint: #d4d4d8;
+  --text-inverse: #ffffff;
+
+  --btn-primary-bg: #09090b;
+  --btn-primary-text: #ffffff;
+  --btn-primary-hover: #27272a;
+
+  --btn-secondary-bg: #f4f4f5;
+  --btn-secondary-border: rgba(0, 0, 0, 0.08);
+  --btn-secondary-text: #27272a;
+  --btn-secondary-hover: #e4e4e7;
+
+  --danger-color: #ef4444;
+  --danger-hover-bg: rgba(239, 68, 68, 0.08);
+
+  --flag-urgent: #e11d48;
+  --tag-bg: #f4f4f5;
+  --tag-border: rgba(0, 0, 0, 0.06);
+  --tag-text: #52525b;
+}
+
+[data-theme="light"] .brand-icon {
+  filter: invert(1);
+}
+
+/* System Auto-Match */
+@media (prefers-color-scheme: light) {
+  [data-theme="auto"] {
+    --bg: #f6f6f8;
+    --surface: #ffffff;
+    --surface-raised: #f0f0f3;
+    --surface-hover: #f3f3f6;
+    --surface-card: #ffffff;
+
+    --border: rgba(0, 0, 0, 0.08);
+    --border-light: rgba(0, 0, 0, 0.14);
+    --border-focus: rgba(0, 0, 0, 0.3);
+
+    --text-bright: #09090b;
+    --text-main: #18181b;
+    --text-secondary: #71717a;
+    --text-muted: #a1a1aa;
+    --text-faint: #d4d4d8;
+    --text-inverse: #ffffff;
+
+    --btn-primary-bg: #09090b;
+    --btn-primary-text: #ffffff;
+    --btn-primary-hover: #27272a;
+
+    --btn-secondary-bg: #f4f4f5;
+    --btn-secondary-border: rgba(0, 0, 0, 0.08);
+    --btn-secondary-text: #27272a;
+    --btn-secondary-hover: #e4e4e7;
+
+    --danger-color: #ef4444;
+    --danger-hover-bg: rgba(239, 68, 68, 0.08);
+
+    --flag-urgent: #e11d48;
+    --tag-bg: #f4f4f5;
+    --tag-border: rgba(0, 0, 0, 0.06);
+    --tag-text: #52525b;
+  }
+  [data-theme="auto"] .brand-icon {
+    filter: invert(1);
+  }
 }

@@ -26,6 +26,7 @@ class TodoApp {
   cacheDOM() {
     // Header
     this.activeCountBadge = document.getElementById('activeCountBadge');
+    this.activeCountText = document.getElementById('activeCountText');
     this.openGuideBtn = document.getElementById('openGuideBtn');
     this.soundToggleBtn = document.getElementById('soundToggleBtn');
     this.soundIconOn = document.getElementById('soundIconOn');
@@ -411,7 +412,11 @@ class TodoApp {
     const pending = total - completed;
 
     // Header & counters
-    this.activeCountBadge.textContent = `${pending} активных`;
+    if (this.activeCountText) {
+      this.activeCountText.textContent = `${pending} активных`;
+    } else if (this.activeCountBadge) {
+      this.activeCountBadge.textContent = `${pending} активных`;
+    }
     this.countAll.textContent = total;
     this.countPending.textContent = pending;
     this.countCompleted.textContent = completed;
@@ -503,13 +508,13 @@ class TodoApp {
         </div>
 
         <div class="task-actions">
-          <button type="button" class="btn-icon btn-edit" title="Редактировать (или 2x клик)" aria-label="Редактировать">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <button type="button" class="btn-icon-sm btn-edit" title="Редактировать (или 2x клик)" aria-label="Редактировать">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
             </svg>
           </button>
-          <button type="button" class="btn-icon btn-delete delete" title="Удалить" aria-label="Удалить">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <button type="button" class="btn-icon-sm btn-delete delete" title="Удалить" aria-label="Удалить">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
             </svg>
           </button>

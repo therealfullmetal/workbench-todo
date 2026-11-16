@@ -1,56 +1,60 @@
 /* ==========================================================================
-   MINIMALIST TOKENS — PURE BLACK & MONOCHROME
-   Clean, refined, distraction-free
+   MINIMALIST EDITORIAL TOKENS
+   Inspired by Gunner Stahl · Rayymond · Rafik Greiss
+   Zero Cringe · Pure Handcrafted Craft · Subtle Micro-Interactions
    ========================================================================== */
 
 :root {
-  /* Canvas & Surfaces */
-  --bg: #000000;
-  --surface: #0a0a0c;
-  --surface-hover: #121215;
-  --surface-raised: #18181c;
-  --surface-card: #0e0e11;
+  /* Canvas & Obsidian Surfaces */
+  --bg: #070709;
+  --surface: #0e0e12;
+  --surface-raised: #15151b;
+  --surface-hover: #191922;
+  --surface-card: #0b0b0e;
   
-  /* Borders */
-  --border: #1a1a1f;
-  --border-light: #26262e;
-  --border-focus: #3e3e4a;
+  /* Hairline Borders */
+  --border: rgba(255, 255, 255, 0.07);
+  --border-light: rgba(255, 255, 255, 0.12);
+  --border-focus: rgba(255, 255, 255, 0.24);
 
   /* Typography Colors */
-  --text-main: #f4f4f6;
-  --text-secondary: #888892;
-  --text-muted: #52525c;
-  --text-inverse: #000000;
+  --text-bright: #ffffff;
+  --text-main: #ececef;
+  --text-secondary: #848492;
+  --text-muted: #50505c;
+  --text-faint: #34343e;
+  --text-inverse: #070709;
 
   /* Accent Buttons */
-  --btn-primary-bg: #ffffff;
-  --btn-primary-text: #000000;
-  --btn-primary-hover: #e8e8ec;
+  --btn-primary-bg: #f4f4f7;
+  --btn-primary-text: #070709;
+  --btn-primary-hover: #ffffff;
 
-  --btn-secondary-bg: #141418;
-  --btn-secondary-border: #222228;
-  --btn-secondary-text: #d0d0d8;
-  --btn-secondary-hover: #1c1c22;
+  --btn-secondary-bg: #14141a;
+  --btn-secondary-border: rgba(255, 255, 255, 0.08);
+  --btn-secondary-text: #cfcfe0;
+  --btn-secondary-hover: #1b1b24;
 
-  --danger-color: #e06c75;
-  --danger-hover-bg: rgba(224, 108, 117, 0.08);
+  --danger-color: #f87171;
+  --danger-hover-bg: rgba(248, 113, 113, 0.1);
 
-  /* Subtle Indicators (No garish rainbow badges) */
-  --flag-urgent: #ff5c5c;
-  --tag-bg: #141418;
-  --tag-border: #222228;
-  --tag-text: #9a9aa6;
+  /* Subtle Indicators */
+  --flag-urgent: #fb7185;
+  --tag-bg: #131318;
+  --tag-border: rgba(255, 255, 255, 0.07);
+  --tag-text: #9696a4;
 
-  /* Radiuses */
-  --radius-xs: 3px;
-  --radius-sm: 5px;
-  --radius-md: 7px;
-  --radius-lg: 10px;
+  /* Soft Tactile Radiuses */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 9px;
+  --radius-lg: 13px;
 
   /* Typography */
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", -system-ui, sans-serif;
-  --font-mono: -apple-system-ui-monospace, "SF Mono", "Menlo", monospace;
+  --font-mono: ui-monospace, "SF Mono", "Menlo", monospace;
 
-  /* Transitions */
+  /* Buttery Springs & Easing */
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }

@@ -1,6 +1,6 @@
 /* ==========================================================================
    MINIMALIST TODO // STYLESHEET
-   Clean · Intuitive · Zero Visual Noise · Modern Dark Aesthetic
+   Clean · Handcrafted · Tactile · Subtle Micro-Interactions
    ========================================================================== */
 
 * {
@@ -9,22 +9,27 @@
   padding: 0;
 }
 
+::selection {
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--text-bright);
+}
+
 html, body {
   width: 100%;
   min-height: 100%;
   background-color: var(--bg);
   color: var(--text-main);
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: 13.5px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Base button */
+/* Base interactive elements */
 button {
   font-family: inherit;
-  font-size: 13px;
+  font-size: 12.5px;
   cursor: pointer;
   border: none;
   background: none;
@@ -33,7 +38,7 @@ button {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transition: all 0.15s ease;
+  transition: all 160ms var(--ease);
   user-select: none;
 }
 
@@ -41,7 +46,6 @@ button:focus-visible {
   outline: 1px solid var(--border-focus);
 }
 
-/* Base Inputs */
 input, select {
   font-family: inherit;
   font-size: 13px;
@@ -50,7 +54,7 @@ input, select {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   outline: none;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  transition: border-color 160ms var(--ease), background-color 160ms var(--ease);
 }
 
 input:focus, select:focus {
@@ -73,35 +77,60 @@ input::placeholder {
   padding: 0 24px;
   position: sticky;
   top: 0;
-  background-color: rgba(0, 0, 0, 0.88);
-  backdrop-filter: blur(10px);
+  background-color: rgba(7, 7, 9, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   z-index: 40;
 }
 
 .header-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .brand-icon {
-  height: 22px;
+  height: 20px;
   width: auto;
   display: block;
-  opacity: 0.95;
+  opacity: 0.92;
+  transition: opacity 160ms ease;
+}
+
+.brand-icon:hover {
+  opacity: 1;
 }
 
 .brand-title {
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  color: var(--text-main);
+  font-size: 14px;
+  font-weight: 550;
+  letter-spacing: -0.02em;
+  color: var(--text-bright);
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+}
+
+.btn-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  background: transparent;
+  transition: all 150ms var(--ease);
+}
+
+.btn-icon:hover {
+  color: var(--text-bright);
+  background: var(--surface-raised);
+}
+
+.btn-icon svg {
+  width: 14px;
+  height: 14px;
 }
 
 .btn-guide-trigger {
@@ -114,51 +143,64 @@ input::placeholder {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: all 0.15s ease;
+  transition: all 160ms var(--ease);
 }
 
 .btn-guide-trigger:hover {
-  color: var(--text-main);
+  color: var(--text-bright);
   border-color: var(--border-light);
   background: var(--surface-hover);
+  transform: translateY(-0.5px);
 }
 
 .active-count-badge {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--text-secondary);
   background: var(--surface);
   border: 1px solid var(--border);
   padding: 4px 9px;
-  border-radius: var(--radius-sm);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pulse-indicator {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 6px rgba(52, 211, 153, 0.5);
 }
 
 /* ==========================================================================
    APP CONTAINER
    ========================================================================== */
 .app-container {
-  max-width: 620px;
+  max-width: 580px;
   margin: 0 auto;
-  padding: 32px 20px 80px;
+  padding: 30px 18px 80px;
 }
 
 /* ==========================================================================
-   TASK CREATOR PANEL (INTUITIVE & CLEAN)
+   TASK CREATOR PANEL (COMPACT & BEAUTIFUL)
    ========================================================================== */
 .task-creator {
   background: var(--surface-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 14px 16px;
-  margin-bottom: 24px;
+  padding: 12px 14px;
+  margin-bottom: 22px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  transition: border-color 0.15s ease;
+  gap: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  transition: border-color 180ms var(--ease), box-shadow 180ms var(--ease);
 }
 
 .task-creator:focus-within {
   border-color: var(--border-light);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
 }
 
 .creator-main-row {
@@ -171,9 +213,9 @@ input::placeholder {
   flex: 1;
   background: transparent;
   border: none;
-  font-size: 14.5px;
-  padding: 6px 2px;
-  color: var(--text-main);
+  font-size: 14px;
+  padding: 5px 2px;
+  color: var(--text-bright);
 }
 
 .task-main-input:focus {
@@ -184,14 +226,21 @@ input::placeholder {
   background: var(--btn-primary-bg);
   color: var(--btn-primary-text);
   font-weight: 500;
-  font-size: 12.5px;
-  padding: 7px 14px;
+  font-size: 12px;
+  padding: 6px 12px;
   border-radius: var(--radius-sm);
   white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .btn-add:hover {
   background: var(--btn-primary-hover);
+  transform: translateY(-0.5px);
+  box-shadow: 0 3px 10px rgba(255, 255, 255, 0.12);
+}
+
+.btn-add:active {
+  transform: scale(0.97);
 }
 
 .creator-meta-row {
@@ -199,7 +248,7 @@ input::placeholder {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding-top: 10px;
+  padding-top: 9px;
   border-top: 1px solid var(--border);
   flex-wrap: wrap;
 }
@@ -207,31 +256,31 @@ input::placeholder {
 .creator-chips {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
-/* Modern chip selectors */
-.chip-select-wrap {
+.chip-select-wrap,
+.chip-date-wrap {
   position: relative;
   display: inline-flex;
   align-items: center;
 }
 
 .chip-select {
-  font-size: 12px;
-  padding: 4px 10px 4px 26px;
-  background-color: var(--bg);
+  font-size: 11.5px;
+  padding: 3px 8px 3px 24px;
+  background-color: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5' fill='none'%3E%3Cpath d='M1 1L4 4L7 1' stroke='%23888892' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5' fill='none'%3E%3Cpath d='M1 1L4 4L7 1' stroke='%23848492' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 8px center;
-  padding-right: 22px;
-  transition: all 0.15s ease;
+  background-position: right 7px center;
+  padding-right: 20px;
+  transition: all 150ms var(--ease);
 }
 
 .chip-select:hover {
@@ -241,23 +290,23 @@ input::placeholder {
 
 .chip-icon {
   position: absolute;
-  left: 8px;
-  width: 13px;
-  height: 13px;
+  left: 7px;
+  width: 12px;
+  height: 12px;
   color: var(--text-muted);
   pointer-events: none;
 }
 
 .chip-date {
-  font-size: 12px;
-  padding: 4px 8px;
-  background-color: var(--bg);
+  font-size: 11.5px;
+  padding: 3px 8px 3px 24px;
+  background-color: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
   cursor: pointer;
   color-scheme: dark;
-  transition: all 0.15s ease;
+  transition: all 150ms var(--ease);
 }
 
 .chip-date:hover {
@@ -265,15 +314,14 @@ input::placeholder {
   border-color: var(--border-light);
 }
 
-/* Toggle flag button (Urgent / Important) */
 .chip-flag-btn {
-  font-size: 12px;
-  padding: 4px 10px;
-  background: var(--bg);
+  font-size: 11.5px;
+  padding: 3px 9px;
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
-  transition: all 0.15s ease;
+  transition: all 150ms var(--ease);
 }
 
 .chip-flag-btn:hover {
@@ -283,41 +331,48 @@ input::placeholder {
 
 .chip-flag-btn.active {
   color: var(--flag-urgent);
-  background: rgba(255, 92, 92, 0.08);
-  border-color: rgba(255, 92, 92, 0.3);
+  background: rgba(251, 113, 133, 0.08);
+  border-color: rgba(251, 113, 133, 0.3);
 }
 
 .chip-flag-btn svg {
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
+}
+
+.creator-hint {
+  font-size: 10.5px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
 }
 
 /* ==========================================================================
-   TOOLBAR (TABS & SEARCH)
+   TOOLBAR (SEGMENTED TABS & SEARCH)
    ========================================================================== */
 .toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .filter-tabs {
   display: flex;
   align-items: center;
   gap: 2px;
-  background: var(--surface);
+  background: #0b0b0e;
   border: 1px solid var(--border);
   padding: 2px;
-  border-radius: var(--radius-sm);
+  border-radius: 8px;
 }
 
 .tab-btn {
   padding: 4px 10px;
   font-size: 12px;
   color: var(--text-secondary);
-  border-radius: var(--radius-xs);
+  border-radius: 6px;
+  transition: all 150ms var(--ease);
 }
 
 .tab-btn:hover {
@@ -325,12 +380,14 @@ input::placeholder {
 }
 
 .tab-btn.active {
-  background: var(--surface-raised);
-  color: var(--text-main);
+  background: #171720;
+  color: var(--text-bright);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 .tab-count {
-  font-size: 11px;
+  font-size: 10.5px;
+  font-family: var(--font-mono);
   color: var(--text-muted);
   margin-left: 4px;
 }
@@ -348,26 +405,28 @@ input::placeholder {
 .search-icon-svg {
   position: absolute;
   left: 9px;
-  width: 13px;
-  height: 13px;
+  width: 12px;
+  height: 12px;
   color: var(--text-muted);
   pointer-events: none;
 }
 
 .search-input {
-  padding: 5px 10px 5px 28px;
-  width: 150px;
-  font-size: 12.5px;
-  background-color: var(--surface);
-  transition: width 0.15s ease;
+  padding: 4px 8px 4px 26px;
+  width: 135px;
+  font-size: 12px;
+  border-radius: 7px;
+  background-color: var(--surface-card);
+  transition: width 180ms var(--ease), border-color 150ms ease;
 }
 
 .search-input:focus {
-  width: 180px;
+  width: 175px;
+  border-color: var(--border-light);
 }
 
 /* ==========================================================================
-   TASK LIST
+   TASK LIST & ITEMS
    ========================================================================== */
 .task-list {
   display: flex;
@@ -379,27 +438,40 @@ input::placeholder {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 11px 14px;
+  padding: 10px 13px;
   display: flex;
   align-items: center;
   gap: 12px;
-  transition: background-color 0.12s ease, border-color 0.12s ease, opacity 0.15s ease;
+  animation: taskAppear 180ms var(--ease) forwards;
+  transition: background-color 160ms var(--ease), border-color 160ms var(--ease), transform 160ms var(--ease), opacity 180ms ease;
+}
+
+@keyframes taskAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .task-item:hover {
   background: var(--surface-hover);
   border-color: var(--border-light);
+  transform: translateY(-0.5px);
 }
 
 .task-item.completed {
-  opacity: 0.4;
+  opacity: 0.38;
 }
 
 .task-item.completed:hover {
-  opacity: 0.75;
+  opacity: 0.72;
 }
 
-/* Checkbox */
+/* Tactile Checkbox */
 .checkbox-wrap {
   position: relative;
   width: 18px;
@@ -423,26 +495,31 @@ input::placeholder {
 .checkbox-custom {
   width: 18px;
   height: 18px;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-xs);
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  border-radius: 5px;
   background: var(--bg);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.12s ease;
+  transition: all 160ms var(--spring);
+}
+
+.checkbox-wrap:hover .checkbox-custom {
+  border-color: rgba(255, 255, 255, 0.35);
 }
 
 .checkbox-native:checked + .checkbox-custom {
   background: var(--btn-primary-bg);
   border-color: var(--btn-primary-bg);
+  transform: scale(1.04);
 }
 
 .checkbox-custom svg {
   display: none;
-  width: 11px;
-  height: 11px;
+  width: 10px;
+  height: 10px;
   color: var(--btn-primary-text);
-  stroke-width: 2.2;
+  stroke-width: 2.4;
 }
 
 .checkbox-native:checked + .checkbox-custom svg {
@@ -461,13 +538,15 @@ input::placeholder {
 .task-title-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .task-title {
   font-size: 13.5px;
+  letter-spacing: -0.01em;
   color: var(--text-main);
   word-break: break-word;
+  transition: color 160ms ease;
 }
 
 .task-item.completed .task-title {
@@ -483,8 +562,8 @@ input::placeholder {
 }
 
 .flag-indicator svg {
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
 }
 
 .task-meta {
@@ -501,7 +580,7 @@ input::placeholder {
   align-items: center;
   gap: 4px;
   padding: 1px 6px;
-  border-radius: var(--radius-xs);
+  border-radius: 4px;
   font-size: 10.5px;
   background: var(--tag-bg);
   border: 1px solid var(--tag-border);
@@ -509,8 +588,8 @@ input::placeholder {
 }
 
 .badge-icon {
-  width: 11px;
-  height: 11px;
+  width: 10px;
+  height: 10px;
 }
 
 /* Actions */
@@ -519,68 +598,89 @@ input::placeholder {
   align-items: center;
   gap: 2px;
   opacity: 0;
-  transition: opacity 0.12s ease;
+  transition: opacity 150ms var(--ease);
 }
 
 .task-item:hover .task-actions {
   opacity: 1;
 }
 
-.btn-icon {
-  width: 28px;
-  height: 28px;
+.btn-icon-sm {
+  width: 26px;
+  height: 26px;
   border-radius: var(--radius-xs);
   color: var(--text-secondary);
   padding: 0;
+  transition: all 140ms var(--ease);
 }
 
-.btn-icon:hover {
-  color: var(--text-main);
+.btn-icon-sm:hover {
+  color: var(--text-bright);
   background: var(--surface-raised);
+  transform: scale(1.06);
 }
 
-.btn-icon.delete:hover {
+.btn-icon-sm.delete:hover {
   color: var(--danger-color);
   background: var(--danger-hover-bg);
 }
 
-.btn-icon svg {
-  width: 13px;
-  height: 13px;
+.btn-icon-sm svg {
+  width: 12px;
+  height: 12px;
 }
 
 .edit-input {
   width: 100%;
-  padding: 4px 6px;
+  padding: 3px 6px;
   font-size: 13.5px;
   background: var(--bg);
   border: 1px solid var(--border-light);
-  color: var(--text-main);
+  color: var(--text-bright);
   border-radius: var(--radius-xs);
 }
 
 /* ==========================================================================
-   EMPTY STATE
+   EMPTY STATE (SWEET & MINIMAL)
    ========================================================================== */
 .empty-box {
   border: 1px dashed var(--border);
   border-radius: var(--radius-md);
-  padding: 44px 20px;
+  padding: 40px 20px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
+}
+
+.empty-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.empty-icon-wrap svg {
+  width: 16px;
+  height: 16px;
 }
 
 .empty-title {
   font-size: 13px;
+  font-weight: 500;
   color: var(--text-secondary);
 }
 
 .empty-desc {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--text-muted);
 }
 
@@ -588,19 +688,20 @@ input::placeholder {
    FOOTER
    ========================================================================== */
 .list-footer {
-  margin-top: 24px;
+  margin-top: 22px;
   padding-top: 14px;
   border-top: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--text-secondary);
 }
 
 .btn-clear {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--text-secondary);
+  transition: color 140ms ease;
 }
 
 .btn-clear:hover {
@@ -626,43 +727,43 @@ input::placeholder {
   background: var(--surface-raised);
   border: 1px solid var(--border-light);
   padding: 8px 14px;
-  border-radius: var(--radius-md);
-  font-size: 12.5px;
-  color: var(--text-main);
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--text-bright);
   display: flex;
   align-items: center;
   gap: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
-  pointer-events: auto;
-  animation: toastFade 0.15s ease forwards;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+  animation: toastFade 180ms var(--ease) forwards;
 }
 
 @keyframes toastFade {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .btn-toast-undo {
   color: #ffffff;
-  font-size: 12px;
+  font-size: 11.5px;
   text-decoration: underline;
   padding: 0;
 }
 
 /* ==========================================================================
-   INTERACTIVE ANIMATED ONBOARDING MODAL
+   INTERACTIVE ONBOARDING MODAL
    ========================================================================== */
 .modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: none;
   align-items: center;
   justify-content: center;
   z-index: 200;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity 180ms ease;
 }
 
 .modal-overlay.open {
@@ -676,11 +777,11 @@ input::placeholder {
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
   width: 90%;
-  max-width: 520px;
+  max-width: 480px;
   overflow: hidden;
-  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.9);
-  transform: translateY(8px);
-  transition: transform 0.2s var(--ease);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+  transform: translateY(6px);
+  transition: transform 200ms var(--ease);
 }
 
 .modal-overlay.open .guide-modal {
@@ -688,7 +789,7 @@ input::placeholder {
 }
 
 .guide-header {
-  padding: 16px 20px;
+  padding: 14px 18px;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -696,27 +797,28 @@ input::placeholder {
 }
 
 .guide-header-title {
-  font-size: 14.5px;
-  font-weight: 500;
-  color: var(--text-main);
+  font-size: 13.5px;
+  font-weight: 550;
+  color: var(--text-bright);
 }
 
 .guide-body {
-  padding: 24px 20px;
+  padding: 20px 18px;
 }
 
 .guide-steps-progress {
   display: flex;
   gap: 6px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .progress-dot {
   flex: 1;
-  height: 3px;
+  height: 2.5px;
   background: var(--border);
   border-radius: 2px;
-  transition: background-color 0.2s ease;
+  cursor: pointer;
+  transition: background-color 200ms ease;
 }
 
 .progress-dot.active {
@@ -726,38 +828,37 @@ input::placeholder {
 .guide-slide {
   display: none;
   flex-direction: column;
-  gap: 16px;
-  animation: slideFade 0.2s ease;
+  gap: 14px;
 }
 
 .guide-slide.active {
   display: flex;
+  animation: slideFade 180ms var(--ease);
 }
 
 @keyframes slideFade {
-  from { opacity: 0; transform: translateX(8px); }
+  from { opacity: 0; transform: translateX(6px); }
   to { opacity: 1; transform: translateX(0); }
 }
 
 .slide-title {
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 600;
-  color: var(--text-main);
+  color: var(--text-bright);
 }
 
 .slide-desc {
-  font-size: 13px;
+  font-size: 12.5px;
   color: var(--text-secondary);
   line-height: 1.5;
 }
 
-/* Interactive simulation preview container */
 .sim-preview-box {
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 16px;
-  min-height: 140px;
+  padding: 14px;
+  min-height: 120px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -765,18 +866,17 @@ input::placeholder {
   overflow: hidden;
 }
 
-/* Animations for interactive simulation */
 .sim-input-box {
   background: var(--surface);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-sm);
-  padding: 8px 12px;
-  font-size: 13px;
+  padding: 7px 10px;
+  font-size: 12.5px;
   color: var(--text-main);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .sim-typing-text::after {
@@ -793,28 +893,29 @@ input::placeholder {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 8px 12px;
+  padding: 7px 10px;
   display: flex;
   align-items: center;
   gap: 10px;
-  animation: simTaskAppear 0.4s var(--ease) forwards;
+  animation: simTaskAppear 0.3s var(--ease) forwards;
 }
 
 @keyframes simTaskAppear {
-  from { opacity: 0; transform: translateY(-6px); }
+  from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .sim-checkbox {
   width: 16px;
   height: 16px;
-  border: 1px solid var(--border-light);
-  border-radius: 3px;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
   background: var(--bg);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: all 140ms var(--spring);
 }
 
 .sim-checkbox.checked {
@@ -824,35 +925,25 @@ input::placeholder {
 
 .sim-checkbox.checked svg {
   display: block;
-  stroke: #000;
-  width: 10px;
-  height: 10px;
+  stroke: #070709;
+  width: 9px;
+  height: 9px;
 }
 
 .sim-toast {
-  position: absolute;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
   background: var(--surface-raised);
   border: 1px solid var(--border-light);
-  border-radius: var(--radius-sm);
-  padding: 6px 12px;
+  border-radius: 20px;
+  padding: 6px 14px;
   font-size: 11px;
   display: flex;
   align-items: center;
   gap: 10px;
   box-shadow: 0 4px 14px rgba(0,0,0,0.6);
-  animation: simToastIn 0.3s ease;
-}
-
-@keyframes simToastIn {
-  from { opacity: 0; transform: translate(-50%, 8px); }
-  to { opacity: 1; transform: translate(-50%, 0); }
 }
 
 .guide-footer {
-  padding: 14px 20px;
+  padding: 12px 18px;
   border-top: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -860,7 +951,7 @@ input::placeholder {
 }
 
 .guide-step-counter {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--text-muted);
 }
 
@@ -871,8 +962,8 @@ input::placeholder {
 }
 
 .btn-nav-guide {
-  font-size: 12.5px;
-  padding: 6px 14px;
+  font-size: 12px;
+  padding: 5px 12px;
   border-radius: var(--radius-sm);
 }
 
@@ -893,7 +984,7 @@ input::placeholder {
 }
 
 .btn-nav-guide.secondary:hover {
-  color: var(--text-main);
+  color: var(--text-bright);
   background: var(--surface-hover);
 }
 

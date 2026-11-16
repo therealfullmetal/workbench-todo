@@ -24,6 +24,20 @@
     </div>
 
     <div class="header-actions">
+      <!-- Sound Mute/Unmute Toggle -->
+      <button type="button" class="btn-icon" id="soundToggleBtn" aria-label="Переключить звук" title="Звуковые эффекты">
+        <svg id="soundIconOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+        <svg id="soundIconOff" style="display: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <line x1="23" y1="9" x2="17" y2="15"/>
+          <line x1="17" y1="9" x2="23" y2="15"/>
+        </svg>
+      </button>
+
+      <!-- Guide Trigger -->
       <button type="button" class="btn-guide-trigger" id="openGuideBtn" aria-label="Открыть интерактивную инструкцию">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"/>
@@ -95,14 +109,14 @@
 
     <!-- Toolbar -->
     <section class="toolbar">
-      <div class="filter-tabs">
-        <button type="button" class="tab-btn active" id="tabAll">
+      <div class="filter-tabs" role="tablist" aria-label="Фильтры задач">
+        <button type="button" class="tab-btn active" id="tabAll" role="tab" aria-selected="true">
           Все <span class="tab-count" id="countAll">0</span>
         </button>
-        <button type="button" class="tab-btn" id="tabPending">
+        <button type="button" class="tab-btn" id="tabPending" role="tab" aria-selected="false">
           Активные <span class="tab-count" id="countPending">0</span>
         </button>
-        <button type="button" class="tab-btn" id="tabCompleted">
+        <button type="button" class="tab-btn" id="tabCompleted" role="tab" aria-selected="false">
           Завершенные <span class="tab-count" id="countCompleted">0</span>
         </button>
       </div>
@@ -112,12 +126,12 @@
           <circle cx="11" cy="11" r="7"/>
           <path d="M21 21l-4.35-4.35"/>
         </svg>
-        <input type="text" id="searchInput" class="search-input" placeholder="Поиск..." aria-label="Поиск задач">
+        <input type="text" id="searchInput" class="search-input" placeholder="Поиск (нажмите /)..." aria-label="Поиск задач">
       </div>
     </section>
 
     <!-- Task List -->
-    <section id="taskList" class="task-list"></section>
+    <section id="taskList" class="task-list" aria-live="polite"></section>
 
     <!-- Empty Box -->
     <div id="emptyBox" class="empty-box" style="display: none;">
@@ -162,9 +176,9 @@
           <div class="slide-desc">
             Введите текст и нажмите <strong>Enter</strong>. Опционально добавьте срок, категорию или отметьте задачу флажком «Важно».
           </div>
-          <div class="sim-preview-box" id="simStep1Box">
+          <div class="sim-preview-box">
             <div class="sim-input-box">
-              <span class="sim-typing-text" id="simTypingTarget">Сдать отчет до 18:00</span>
+              <span class="sim-typing-text">Сдать отчет до 18:00</span>
               <span class="tag-badge" style="background:#222; border-color:#333;">Enter ↵</span>
             </div>
             <div class="sim-task-row" style="margin-top: 6px;">
@@ -181,7 +195,7 @@
         <div class="guide-slide" data-slide="1">
           <div class="slide-title">2. Выполнение и инлайн-редактирование</div>
           <div class="slide-desc">
-            Кликните по чекбоксу, чтобы завершить задачу. Дважды кликните по тексту (или нажмите иконку карандаша), чтобы изменить название прямо на месте.
+            Кликните по чекбоксу, чтобы завершить задачу (с приятным тактильным звуком). Дважды кликните по тексту (или нажмите иконку карандаша), чтобы изменить название прямо на месте.
           </div>
           <div class="sim-preview-box">
             <div class="sim-task-row" id="simInteractiveTask">
@@ -198,21 +212,22 @@
           </div>
         </div>
 
-        <!-- Slide 3: Фильтры и мгновенный поиск -->
+        <!-- Slide 3: Фильтры, поиск и горячие клавиши -->
         <div class="guide-slide" data-slide="2">
-          <div class="slide-title">3. Умная фильтрация и поиск</div>
+          <div class="slide-title">3. Фильтрация и горячие клавиши</div>
           <div class="slide-desc">
-            Переключайтесь между вкладками «Все», «Активные» и «Завершенные», либо используйте поле поиска для мгновенной фильтрации по ключевым словам.
+            Управляйте задачами без мыши с помощью удобных шорткатов:
           </div>
           <div class="sim-preview-box">
-            <div style="display: flex; gap: 4px; margin-bottom: 10px;">
-              <span class="tab-btn active" style="font-size: 11px;">Активные (2)</span>
-              <span class="tab-btn" style="font-size: 11px;">Завершенные (1)</span>
-            </div>
-            <div class="sim-task-row">
-              <div class="sim-checkbox"></div>
-              <span style="font-size: 12.5px; color: #f4f4f6;">Подготовить презентацию</span>
-              <span class="tag-badge" style="margin-left: auto;">Работа</span>
+            <div style="display: grid; grid-template-columns: 1fr auto; gap: 8px; font-size: 12px;">
+              <span style="color:#d0d0d8;">Фокус на ввод новой задачи:</span>
+              <span class="tag-badge">N или /</span>
+
+              <span style="color:#d0d0d8;">Быстрое переключение вкладок:</span>
+              <span class="tag-badge">1 · 2 · 3</span>
+
+              <span style="color:#d0d0d8;">Отмена / Закрытие окон:</span>
+              <span class="tag-badge">Esc</span>
             </div>
           </div>
         </div>

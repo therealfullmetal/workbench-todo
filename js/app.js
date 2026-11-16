@@ -1,9 +1,10 @@
 /**
  * MINIMALIST TASK APP
- * Clean reactive controller with interactive onboarding & intuitive UX
+ * Clean reactive controller with interactive onboarding, micro-haptics & intuitive UX
  */
 
 import { Storage } from './storage.js';
+import { sound } from './sound.js';
 
 class TodoApp {
   constructor() {
@@ -17,6 +18,7 @@ class TodoApp {
 
     this.cacheDOM();
     this.bindEvents();
+    this.initSoundUI();
     this.initGuide();
     this.render();
   }
@@ -25,6 +27,9 @@ class TodoApp {
     // Header
     this.activeCountBadge = document.getElementById('activeCountBadge');
     this.openGuideBtn = document.getElementById('openGuideBtn');
+    this.soundToggleBtn = document.getElementById('soundToggleBtn');
+    this.soundIconOn = document.getElementById('soundIconOn');
+    this.soundIconOff = document.getElementById('soundIconOff');
 
     // Form & Chips
     this.taskForm = document.getElementById('taskForm');
@@ -78,6 +83,13 @@ class TodoApp {
     this.flagToggleBtn.addEventListener('click', () => {
       this.isUrgentSelected = !this.isUrgentSelected;
       this.flagToggleBtn.classList.toggle('active', this.isUrgentSelected);
+      sound.playCheck();
+    });
+
+    // Sound Toggle
+    this.soundToggleBtn.addEventListener('click', () => {
+      const isMuted = sound.toggleMute();
+      this.updateSoundIcon(isMuted);
     });
 
     // Filter tabs
@@ -100,12 +112,36 @@ class TodoApp {
 
     // Global keyboard handling
     window.addEventListener('keydown', (e) => {
+      const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+      const isInput = activeTag === 'input' || activeTag === 'select' || activeTag === 'textarea';
+
+      if (!isInput) {
+        if (e.key === 'n' || e.key === 'N' || e.key === '/') {
+          e.preventDefault();
+          this.taskInput.focus();
+        } else if (e.key === '1') {
+          e.preventDefault();
+          this.setFilter('all');
+        } else if (e.key === '2') {
+          e.preventDefault();
+          this.setFilter('pending');
+        } else if (e.key === '3') {
+          e.preventDefault();
+          this.setFilter('completed');
+        } else if (e.key === '?') {
+          e.preventDefault();
+          this.openGuide(0);
+        }
+      }
+
       if (e.key === 'Escape') {
         if (this.guideModal && this.guideModal.classList.contains('open')) {
           this.closeGuide();
         } else if (this.editingId) {
           this.editingId = null;
           this.render();
+        } else if (isInput) {
+          document.activeElement.blur();
         }
       }
     });
@@ -142,9 +178,11 @@ class TodoApp {
       this.simDemoCheckbox.addEventListener('click', () => {
         const isChecked = this.simDemoCheckbox.classList.toggle('checked');
         if (isChecked) {
+          sound.playCheck();
           this.simDemoText.style.textDecoration = 'line-through';
           this.simDemoText.style.color = '#888892';
         } else {
+          sound.playUncheck();
           this.simDemoText.style.textDecoration = 'none';
           this.simDemoText.style.color = '#f4f4f6';
         }
@@ -152,8 +190,18 @@ class TodoApp {
     }
   }
 
+  initSoundUI() {
+    this.updateSoundIcon(sound.isMuted());
+  }
+
+  updateSoundIcon(isMuted) {
+    if (this.soundIconOn && this.soundIconOff) {
+      this.soundIconOn.style.display = isMuted ? 'none' : 'block';
+      this.soundIconOff.style.display = isMuted ? 'block' : 'none';
+    }
+  }
+
   initGuide() {
-    // Check if user has seen onboarding
     const seen = localStorage.getItem('todo_guide_seen');
     if (!seen) {
       setTimeout(() => {
@@ -207,6 +255,8 @@ class TodoApp {
     this.save();
     this.render();
 
+    sound.playAdd();
+
     // Reset inputs
     this.taskInput.value = '';
     this.categorySelect.value = 'none';
@@ -254,6 +304,12 @@ class TodoApp {
     if (!task) return;
 
     task.completed = !task.completed;
+    if (task.completed) {
+      sound.playCheck();
+    } else {
+      sound.playUncheck();
+    }
+
     this.save();
     this.render();
   }
@@ -264,6 +320,8 @@ class TodoApp {
 
     const [deleted] = this.tasks.splice(index, 1);
     this.lastDeleted = { task: deleted, index: index };
+
+    sound.playDelete();
 
     this.save();
     this.render();
@@ -277,6 +335,7 @@ class TodoApp {
     if (!this.lastDeleted) return;
     this.tasks.splice(this.lastDeleted.index, 0, this.lastDeleted.task);
     this.lastDeleted = null;
+    sound.playAdd();
     this.save();
     this.render();
   }
@@ -317,6 +376,7 @@ class TodoApp {
     if (!hasCompleted) return;
 
     this.tasks = this.tasks.filter(t => !t.completed);
+    sound.playDelete();
     this.save();
     this.render();
   }
@@ -361,6 +421,10 @@ class TodoApp {
     this.tabAll.classList.toggle('active', this.filter === 'all');
     this.tabPending.classList.toggle('active', this.filter === 'pending');
     this.tabCompleted.classList.toggle('active', this.filter === 'completed');
+
+    this.tabAll.setAttribute('aria-selected', this.filter === 'all');
+    this.tabPending.setAttribute('aria-selected', this.filter === 'pending');
+    this.tabCompleted.setAttribute('aria-selected', this.filter === 'completed');
 
     // Clear completed button state
     this.clearCompletedBtn.style.visibility = completed > 0 ? 'visible' : 'hidden';

@@ -3,14 +3,14 @@
  * LocalStorage management & persistence
  */
 
-const STORAGE_KEY = 'minimal_tasks_v2';
+const STORAGE_KEY = 'minimal_tasks_v3';
 
 const SEED_TASKS = [
   {
     id: 't-1',
     title: 'Подготовить отчет о разработке проекта',
     completed: true,
-    priority: 'high',
+    urgent: true,
     category: 'Работа',
     dueDate: '2026-11-16',
     createdAt: new Date(Date.now() - 3600000 * 4).toISOString()
@@ -19,7 +19,7 @@ const SEED_TASKS = [
     id: 't-2',
     title: 'Проверить отображение на мобильных устройствах',
     completed: false,
-    priority: 'med',
+    urgent: false,
     category: 'Проект',
     dueDate: '2026-11-17',
     createdAt: new Date(Date.now() - 3600000 * 2).toISOString()
@@ -28,7 +28,7 @@ const SEED_TASKS = [
     id: 't-3',
     title: 'Опубликовать репозиторий на GitHub',
     completed: false,
-    priority: 'high',
+    urgent: true,
     category: 'Работа',
     dueDate: '2026-11-16',
     createdAt: new Date(Date.now() - 3600000 * 1).toISOString()

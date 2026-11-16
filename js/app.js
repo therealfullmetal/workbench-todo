@@ -1,6 +1,6 @@
 /**
  * MINIMALIST TASK APP
- * Clean reactive controller, zero bloat, full feature set.
+ * Clean reactive controller with interactive onboarding & intuitive UX
  */
 
 import { Storage } from './storage.js';
@@ -12,22 +12,26 @@ class TodoApp {
     this.searchQuery = '';
     this.editingId = null;
     this.lastDeleted = null;
+    this.isUrgentSelected = false;
+    this.currentGuideStep = 0;
 
     this.cacheDOM();
     this.bindEvents();
+    this.initGuide();
     this.render();
   }
 
   cacheDOM() {
     // Header
     this.activeCountBadge = document.getElementById('activeCountBadge');
+    this.openGuideBtn = document.getElementById('openGuideBtn');
 
-    // Form
+    // Form & Chips
     this.taskForm = document.getElementById('taskForm');
     this.taskInput = document.getElementById('taskInput');
-    this.prioritySelect = document.getElementById('prioritySelect');
     this.categorySelect = document.getElementById('categorySelect');
     this.dueDateInput = document.getElementById('dueDateInput');
+    this.flagToggleBtn = document.getElementById('flagToggleBtn');
 
     // Filters & Search
     this.tabAll = document.getElementById('tabAll');
@@ -38,7 +42,7 @@ class TodoApp {
     this.countCompleted = document.getElementById('countCompleted');
     this.searchInput = document.getElementById('searchInput');
 
-    // List & Empty
+    // List & Empty State
     this.taskList = document.getElementById('taskList');
     this.emptyBox = document.getElementById('emptyBox');
 
@@ -48,6 +52,19 @@ class TodoApp {
 
     // Toast
     this.toastWrap = document.getElementById('toastWrap');
+
+    // Guide Modal
+    this.guideModal = document.getElementById('guideModal');
+    this.closeGuideBtn = document.getElementById('closeGuideBtn');
+    this.guidePrevBtn = document.getElementById('guidePrevBtn');
+    this.guideNextBtn = document.getElementById('guideNextBtn');
+    this.guideStepCounter = document.getElementById('guideStepCounter');
+    this.progressDots = document.querySelectorAll('.progress-dot');
+    this.guideSlides = document.querySelectorAll('.guide-slide');
+
+    // Interactive demo elements
+    this.simDemoCheckbox = document.getElementById('simDemoCheckbox');
+    this.simDemoText = document.getElementById('simDemoText');
   }
 
   bindEvents() {
@@ -55,6 +72,12 @@ class TodoApp {
     this.taskForm.addEventListener('submit', (e) => {
       e.preventDefault();
       this.addTask();
+    });
+
+    // Urgent Flag toggle in creator
+    this.flagToggleBtn.addEventListener('click', () => {
+      this.isUrgentSelected = !this.isUrgentSelected;
+      this.flagToggleBtn.classList.toggle('active', this.isUrgentSelected);
     });
 
     // Filter tabs
@@ -75,15 +98,95 @@ class TodoApp {
     this.taskList.addEventListener('click', (e) => this.handleListClick(e));
     this.taskList.addEventListener('dblclick', (e) => this.handleListDblClick(e));
 
-    // Global escape key
+    // Global keyboard handling
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        if (this.editingId) {
+        if (this.guideModal && this.guideModal.classList.contains('open')) {
+          this.closeGuide();
+        } else if (this.editingId) {
           this.editingId = null;
           this.render();
         }
       }
     });
+
+    // Guide Navigation
+    this.openGuideBtn.addEventListener('click', () => this.openGuide(0));
+    this.closeGuideBtn.addEventListener('click', () => this.closeGuide());
+    this.guideModal.addEventListener('click', (e) => {
+      if (e.target === this.guideModal) this.closeGuide();
+    });
+
+    this.guidePrevBtn.addEventListener('click', () => {
+      if (this.currentGuideStep > 0) this.setGuideStep(this.currentGuideStep - 1);
+    });
+
+    this.guideNextBtn.addEventListener('click', () => {
+      if (this.currentGuideStep < this.guideSlides.length - 1) {
+        this.setGuideStep(this.currentGuideStep + 1);
+      } else {
+        this.closeGuide();
+      }
+    });
+
+    // Progress dot navigation
+    this.progressDots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        const step = parseInt(dot.dataset.step, 10);
+        this.setGuideStep(step);
+      });
+    });
+
+    // Interactive Demo in slide 2
+    if (this.simDemoCheckbox && this.simDemoText) {
+      this.simDemoCheckbox.addEventListener('click', () => {
+        const isChecked = this.simDemoCheckbox.classList.toggle('checked');
+        if (isChecked) {
+          this.simDemoText.style.textDecoration = 'line-through';
+          this.simDemoText.style.color = '#888892';
+        } else {
+          this.simDemoText.style.textDecoration = 'none';
+          this.simDemoText.style.color = '#f4f4f6';
+        }
+      });
+    }
+  }
+
+  initGuide() {
+    // Check if user has seen onboarding
+    const seen = localStorage.getItem('todo_guide_seen');
+    if (!seen) {
+      setTimeout(() => {
+        this.openGuide(0);
+        localStorage.setItem('todo_guide_seen', 'true');
+      }, 400);
+    }
+  }
+
+  openGuide(step = 0) {
+    this.setGuideStep(step);
+    this.guideModal.classList.add('open');
+  }
+
+  closeGuide() {
+    this.guideModal.classList.remove('open');
+  }
+
+  setGuideStep(step) {
+    this.currentGuideStep = step;
+    const total = this.guideSlides.length;
+
+    this.guideSlides.forEach((slide, idx) => {
+      slide.classList.toggle('active', idx === step);
+    });
+
+    this.progressDots.forEach((dot, idx) => {
+      dot.classList.toggle('active', idx <= step);
+    });
+
+    this.guideStepCounter.textContent = `Шаг ${step + 1} из ${total}`;
+    this.guidePrevBtn.style.display = step > 0 ? 'inline-flex' : 'none';
+    this.guideNextBtn.textContent = step === total - 1 ? 'Понятно, начать работу' : 'Далее';
   }
 
   addTask() {
@@ -94,7 +197,7 @@ class TodoApp {
       id: 't-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 3),
       title: title,
       completed: false,
-      priority: this.prioritySelect.value !== 'none' ? this.prioritySelect.value : null,
+      urgent: this.isUrgentSelected,
       category: this.categorySelect.value !== 'none' ? this.categorySelect.value : null,
       dueDate: this.dueDateInput.value || null,
       createdAt: new Date().toISOString()
@@ -104,7 +207,12 @@ class TodoApp {
     this.save();
     this.render();
 
+    // Reset inputs
     this.taskInput.value = '';
+    this.categorySelect.value = 'none';
+    this.dueDateInput.value = '';
+    this.isUrgentSelected = false;
+    this.flagToggleBtn.classList.remove('active');
     this.taskInput.focus();
   }
 
@@ -282,8 +390,6 @@ class TodoApp {
 
   renderTask(task) {
     const isEditing = this.editingId === task.id;
-    const priorityClass = task.priority ? `p-${task.priority}` : '';
-    const priorityLabels = { high: 'Высокий', med: 'Средний', low: 'Низкий' };
 
     return `
       <div class="task-item ${task.completed ? 'completed' : ''}" data-id="${task.id}">
@@ -300,16 +406,20 @@ class TodoApp {
           ${isEditing ? `
             <input type="text" class="edit-input" value="${this.escapeHTML(task.title)}">
           ` : `
-            <div class="task-title">${this.escapeHTML(task.title)}</div>
+            <div class="task-title-row">
+              <span class="task-title">${this.escapeHTML(task.title)}</span>
+              ${task.urgent ? `
+                <span class="flag-indicator" title="Важная задача">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                    <line x1="4" y1="22" x2="4" y2="15"/>
+                  </svg>
+                </span>
+              ` : ''}
+            </div>
           `}
           
           <div class="task-meta">
-            ${task.priority ? `
-              <span class="tag-badge ${priorityClass}">
-                ${priorityLabels[task.priority] || task.priority}
-              </span>
-            ` : ''}
-
             ${task.category ? `
               <span class="tag-badge">
                 ${this.escapeHTML(task.category)}
@@ -329,7 +439,7 @@ class TodoApp {
         </div>
 
         <div class="task-actions">
-          <button type="button" class="btn-icon btn-edit" title="Редактировать" aria-label="Редактировать">
+          <button type="button" class="btn-icon btn-edit" title="Редактировать (или 2x клик)" aria-label="Редактировать">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
             </svg>
@@ -348,7 +458,10 @@ class TodoApp {
     if (!dateStr) return '';
     const parts = dateStr.split('-');
     if (parts.length === 3) {
-      return `${parts[2]}.${parts[1]}.${parts[0].slice(-2)}`;
+      const day = parts[2];
+      const monthNames = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+      const monthIndex = parseInt(parts[1], 10) - 1;
+      return `${parseInt(day, 10)} ${monthNames[monthIndex] || parts[1]}`;
     }
     return dateStr;
   }

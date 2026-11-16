@@ -23,7 +23,16 @@
       <span class="brand-title">Задачи</span>
     </div>
 
-    <div class="header-info">
+    <div class="header-actions">
+      <button type="button" class="btn-guide-trigger" id="openGuideBtn" aria-label="Открыть интерактивную инструкцию">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        <span>Инструкция</span>
+      </button>
+
       <span id="activeCountBadge" class="active-count-badge">0 активных</span>
     </div>
   </header>
@@ -39,12 +48,12 @@
             type="text" 
             id="taskInput" 
             class="task-main-input" 
-            placeholder="Что нужно сделать?" 
+            placeholder="Добавить новую задачу... (Enter для сохранения)" 
             required 
             autofocus
           >
           <button type="submit" class="btn-add">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
               <path d="M12 5v14M5 12h14"/>
             </svg>
             <span>Добавить</span>
@@ -52,29 +61,33 @@
         </div>
 
         <div class="creator-meta-row">
-          <div class="creator-selectors">
-            <div class="selector-item">
-              <select id="prioritySelect" class="meta-select" aria-label="Приоритет">
-                <option value="none">Без приоритета</option>
-                <option value="low">Низкий</option>
-                <option value="med" selected>Средний</option>
-                <option value="high">Высокий</option>
-              </select>
-            </div>
-
-            <div class="selector-item">
-              <select id="categorySelect" class="meta-select" aria-label="Категория">
-                <option value="none">Без категории</option>
-                <option value="Работа" selected>Работа</option>
+          <div class="creator-chips">
+            <!-- Category Chip -->
+            <div class="chip-select-wrap">
+              <svg class="chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                <line x1="7" y1="7" x2="7.01" y2="7"/>
+              </svg>
+              <select id="categorySelect" class="chip-select" aria-label="Категория">
+                <option value="none">Категория</option>
+                <option value="Работа">Работа</option>
                 <option value="Личное">Личное</option>
                 <option value="Проект">Проект</option>
                 <option value="Учеба">Учеба</option>
               </select>
             </div>
 
-            <div class="selector-item">
-              <input type="date" id="dueDateInput" class="date-input" aria-label="Срок выполнения">
-            </div>
+            <!-- Due Date Chip -->
+            <input type="date" id="dueDateInput" class="chip-date" aria-label="Срок выполнения" title="Срок выполнения">
+
+            <!-- Flag Urgent Toggle Chip -->
+            <button type="button" id="flagToggleBtn" class="chip-flag-btn" title="Отметить как важную">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                <line x1="4" y1="22" x2="4" y2="15"/>
+              </svg>
+              <span>Важно</span>
+            </button>
           </div>
         </div>
       </form>
@@ -120,7 +133,117 @@
 
   </main>
 
-  <!-- Toast -->
+  <!-- =====================================================================
+       INTERACTIVE ANIMATED ONBOARDING MODAL
+       ===================================================================== -->
+  <div id="guideModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="guideTitle">
+    <div class="guide-modal">
+      <div class="guide-header">
+        <h3 id="guideTitle" class="guide-header-title">Интерактивное руководство</h3>
+        <button type="button" class="btn-icon" id="closeGuideBtn" aria-label="Закрыть руководство">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="guide-body">
+        <div class="guide-steps-progress">
+          <div class="progress-dot active" data-step="0"></div>
+          <div class="progress-dot" data-step="1"></div>
+          <div class="progress-dot" data-step="2"></div>
+          <div class="progress-dot" data-step="3"></div>
+        </div>
+
+        <!-- Slide 1: Добавление задач -->
+        <div class="guide-slide active" data-slide="0">
+          <div class="slide-title">1. Быстрое добавление задач</div>
+          <div class="slide-desc">
+            Введите текст и нажмите <strong>Enter</strong>. Опционально добавьте срок, категорию или отметьте задачу флажком «Важно».
+          </div>
+          <div class="sim-preview-box" id="simStep1Box">
+            <div class="sim-input-box">
+              <span class="sim-typing-text" id="simTypingTarget">Сдать отчет до 18:00</span>
+              <span class="tag-badge" style="background:#222; border-color:#333;">Enter ↵</span>
+            </div>
+            <div class="sim-task-row" style="margin-top: 6px;">
+              <div class="sim-checkbox"></div>
+              <span style="font-size: 13px; color: #f4f4f6;">Сдать отчет до 18:00</span>
+              <span class="flag-indicator" style="margin-left: auto;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2: Выполнение и редактирование -->
+        <div class="guide-slide" data-slide="1">
+          <div class="slide-title">2. Выполнение и инлайн-редактирование</div>
+          <div class="slide-desc">
+            Кликните по чекбоксу, чтобы завершить задачу. Дважды кликните по тексту (или нажмите иконку карандаша), чтобы изменить название прямо на месте.
+          </div>
+          <div class="sim-preview-box">
+            <div class="sim-task-row" id="simInteractiveTask">
+              <div class="sim-checkbox checked" id="simDemoCheckbox">
+                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7.5L5.5 10L11 4"/></svg>
+              </div>
+              <span id="simDemoText" style="font-size: 13px; color: #888892; text-decoration: line-through;">
+                Проверить почту и ответить коллегам
+              </span>
+            </div>
+            <div style="font-size: 11px; color: #52525c; margin-top: 12px; text-align: center;">
+              💡 Нажмите на чекбокс выше, чтобы попробовать интерактивно
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3: Фильтры и мгновенный поиск -->
+        <div class="guide-slide" data-slide="2">
+          <div class="slide-title">3. Умная фильтрация и поиск</div>
+          <div class="slide-desc">
+            Переключайтесь между вкладками «Все», «Активные» и «Завершенные», либо используйте поле поиска для мгновенной фильтрации по ключевым словам.
+          </div>
+          <div class="sim-preview-box">
+            <div style="display: flex; gap: 4px; margin-bottom: 10px;">
+              <span class="tab-btn active" style="font-size: 11px;">Активные (2)</span>
+              <span class="tab-btn" style="font-size: 11px;">Завершенные (1)</span>
+            </div>
+            <div class="sim-task-row">
+              <div class="sim-checkbox"></div>
+              <span style="font-size: 12.5px; color: #f4f4f6;">Подготовить презентацию</span>
+              <span class="tag-badge" style="margin-left: auto;">Работа</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 4: Безопасное удаление с отменой -->
+        <div class="guide-slide" data-slide="3">
+          <div class="slide-title">4. Безопасное удаление и отмена</div>
+          <div class="slide-desc">
+            Случайно удалили задачу? Всплывающее уведомление позволяет в один клик отменить действие («Отменить») и мгновенно восстановить элемент.
+          </div>
+          <div class="sim-preview-box" style="align-items: center; justify-content: center;">
+            <div class="sim-toast">
+              <span>Задача удалена</span>
+              <span style="color: #fff; text-decoration: underline; cursor: pointer;">Отменить</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="guide-footer">
+        <span class="guide-step-counter" id="guideStepCounter">Шаг 1 из 4</span>
+        <div class="guide-nav-btns">
+          <button type="button" class="btn-nav-guide secondary" id="guidePrevBtn" style="display: none;">Назад</button>
+          <button type="button" class="btn-nav-guide primary" id="guideNextBtn">Далее</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Wrap -->
   <div id="toastWrap" class="toast-wrap" aria-live="polite"></div>
 
   <!-- App script -->

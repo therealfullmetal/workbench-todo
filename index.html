@@ -3,124 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080808">
-  <title>WORKBENCH // TASK_REGISTRY</title>
+  <meta name="theme-color" content="#000000">
+  <title>Задачи</title>
   
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
 
-  <!-- =====================================================================
-       SITE HEADER
-       ===================================================================== -->
+  <!-- Header -->
   <header class="site-header">
     <div class="header-brand">
-      <div class="brand-pair">
-        <div class="brand-clover" title="Author Mark"></div>
-        <div class="brand-ballerina" title="System Emblem"></div>
-      </div>
-      <div class="brand-separator"></div>
-      <div class="brand-meta">
-        <span class="brand-title">WORKBENCH // TASK_REGISTRY</span>
-        <span class="brand-subtitle">Quiet Workbench standard · Minimalist Editorial Engine</span>
-      </div>
+      <img src="assets/ballerina_clean.png" alt="Logo" class="brand-icon">
+      <span class="brand-title">Задачи</span>
     </div>
 
-    <div class="header-controls">
-      <div class="status-badge">
-        <span class="status-dot"></span>
-        <span>127.0.0.1:8080</span>
-      </div>
-      <button type="button" class="btn-ghost" id="openShortcutsBtn" title="Горячие клавиши [?]">
-        <span class="badge-key">?</span>
-      </button>
+    <div class="header-info">
+      <span id="activeCountBadge" class="active-count-badge">0 активных</span>
     </div>
   </header>
 
-  <!-- =====================================================================
-       MAIN WORKBENCH CONTAINER
-       ===================================================================== -->
+  <!-- Container -->
   <main class="app-container">
 
-    <!-- Metrics Strip -->
-    <section class="metrics-strip">
-      <div class="metric-card">
-        <span class="eyebrow">Всего задач</span>
-        <span class="metric-value" id="metricTotal">0</span>
-      </div>
-      <div class="metric-card">
-        <span class="eyebrow">В процессе</span>
-        <span class="metric-value" id="metricActive">0</span>
-      </div>
-      <div class="metric-card">
-        <span class="eyebrow">Завершено</span>
-        <span class="metric-value" id="metricCompleted">0</span>
-      </div>
-      <div class="metric-card">
-        <span class="eyebrow">Прогресс выполнения</span>
-        <span class="metric-value" id="metricRate">0%</span>
-        <div class="metric-bar-bg">
-          <div class="metric-bar-fill" id="metricBarFill" style="width: 0%;"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Task Creator Form -->
-    <section class="creator-panel">
+    <!-- Task Creator -->
+    <section class="task-creator">
       <form id="taskForm" autocomplete="off">
-        <div class="creator-top-row">
+        <div class="creator-main-row">
           <input 
             type="text" 
             id="taskInput" 
-            class="creator-input" 
-            placeholder="Какую задачу нужно решить? (Нажмите Enter для добавления, N для фокуса)" 
+            class="task-main-input" 
+            placeholder="Что нужно сделать?" 
             required 
             autofocus
           >
-          <button type="submit" class="btn-primary" id="addTaskBtn">
-            <span>+ Добавить</span>
+          <button type="submit" class="btn-add">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            <span>Добавить</span>
           </button>
         </div>
 
-        <div class="creator-bottom-row">
-          <div class="creator-options">
-            <div class="field-group">
-              <span class="field-label">ПРИОРИТЕТ:</span>
-              <select id="prioritySelect">
-                <option value="p1">P1 · Высокий</option>
-                <option value="p2" selected>P2 · Стандартный</option>
-                <option value="p3">P3 · Низкий</option>
+        <div class="creator-meta-row">
+          <div class="creator-selectors">
+            <div class="selector-item">
+              <select id="prioritySelect" class="meta-select" aria-label="Приоритет">
+                <option value="none">Без приоритета</option>
+                <option value="low">Низкий</option>
+                <option value="med" selected>Средний</option>
+                <option value="high">Высокий</option>
               </select>
             </div>
 
-            <div class="field-group">
-              <span class="field-label">КАТЕГОРИЯ:</span>
-              <select id="categorySelect">
-                <option value="Engineering" selected>Engineering</option>
-                <option value="Design">Design</option>
-                <option value="DevOps">DevOps</option>
-                <option value="Research">Research</option>
-                <option value="Personal">Personal</option>
+            <div class="selector-item">
+              <select id="categorySelect" class="meta-select" aria-label="Категория">
+                <option value="none">Без категории</option>
+                <option value="Работа" selected>Работа</option>
+                <option value="Личное">Личное</option>
+                <option value="Проект">Проект</option>
+                <option value="Учеба">Учеба</option>
               </select>
             </div>
 
-            <div class="field-group">
-              <span class="field-label">СРОК:</span>
-              <input type="date" id="dueDateInput" aria-label="Срок выполнения">
+            <div class="selector-item">
+              <input type="date" id="dueDateInput" class="date-input" aria-label="Срок выполнения">
             </div>
           </div>
         </div>
       </form>
     </section>
 
-    <!-- Toolbar & Filters -->
-    <section class="workbench-toolbar">
+    <!-- Toolbar -->
+    <section class="toolbar">
       <div class="filter-tabs">
         <button type="button" class="tab-btn active" id="tabAll">
           Все <span class="tab-count" id="countAll">0</span>
@@ -129,99 +90,40 @@
           Активные <span class="tab-count" id="countPending">0</span>
         </button>
         <button type="button" class="tab-btn" id="tabCompleted">
-          Выполненные <span class="tab-count" id="countCompleted">0</span>
+          Завершенные <span class="tab-count" id="countCompleted">0</span>
         </button>
       </div>
 
-      <div class="toolbar-controls">
-        <div class="search-box">
-          <span class="search-icon">⌕</span>
-          <input type="text" id="searchInput" class="search-input" placeholder="Поиск задач..." aria-label="Поиск задач">
-        </div>
-
-        <select id="filterCategory" aria-label="Фильтр по категориям">
-          <option value="all">Все категории</option>
-          <option value="Engineering">Engineering</option>
-          <option value="Design">Design</option>
-          <option value="DevOps">DevOps</option>
-          <option value="Research">Research</option>
-          <option value="Personal">Personal</option>
-        </select>
-
-        <select id="sortSelect" aria-label="Сортировка">
-          <option value="date-desc">Сначала новые</option>
-          <option value="date-asc">Сначала старые</option>
-          <option value="priority">По приоритету</option>
-          <option value="alpha">По алфавиту</option>
-        </select>
+      <div class="search-box">
+        <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="11" cy="11" r="7"/>
+          <path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input type="text" id="searchInput" class="search-input" placeholder="Поиск..." aria-label="Поиск задач">
       </div>
     </section>
 
     <!-- Task List -->
     <section id="taskList" class="task-list"></section>
 
-    <!-- Empty State -->
-    <div id="emptyState" class="empty-state" style="display: none;">
-      <div class="empty-icon mono">[—]</div>
-      <div class="empty-title">Список пуст</div>
-      <div class="empty-subtitle">Добавьте новую задачу с помощью поля ввода выше</div>
+    <!-- Empty Box -->
+    <div id="emptyBox" class="empty-box" style="display: none;">
+      <div class="empty-title">Задач не найдено</div>
+      <div class="empty-desc">Добавьте новую задачу с помощью поля выше</div>
     </div>
 
-    <!-- Batch Actions & Utilities -->
-    <footer class="site-footer">
-      <div class="footer-left">
-        <button type="button" class="btn-danger-ghost" id="clearCompletedBtn">Очистить выполненные</button>
-        <span class="mono" style="color: var(--wb-border);">/</span>
-        <button type="button" class="btn-ghost" id="resetBtn">Сбросить демо</button>
-      </div>
-
-      <div class="footer-actions">
-        <button type="button" class="btn-secondary" id="exportBtn" title="Экспорт в JSON">
-          <span>↓ Экспорт</span>
-        </button>
-        <button type="button" class="btn-secondary" id="importBtn" title="Импорт из JSON">
-          <span>↑ Импорт</span>
-        </button>
-        <input type="file" id="fileInput" accept=".json" style="display: none;">
-      </div>
+    <!-- Footer -->
+    <footer class="list-footer">
+      <span id="remainingSummary">Осталось задач: 0</span>
+      <button type="button" id="clearCompletedBtn" class="btn-clear">Очистить завершенные</button>
     </footer>
 
   </main>
 
-  <!-- =====================================================================
-       KEYBOARD SHORTCUTS MODAL
-       ===================================================================== -->
-  <div id="shortcutsModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modal-dialog">
-      <div class="modal-header">
-        <h3 id="modalTitle" class="eyebrow">Горячие клавиши</h3>
-        <button type="button" class="btn-ghost" id="closeModalBtn" aria-label="Закрыть">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="shortcut-grid">
-          <span class="shortcut-label">Фокус на строку ввода новой задачи</span>
-          <div class="shortcut-keys"><span class="badge-key">N</span> <span class="shortcut-label">или</span> <span class="badge-key">/</span></div>
+  <!-- Toast -->
+  <div id="toastWrap" class="toast-wrap" aria-live="polite"></div>
 
-          <span class="shortcut-label">Сохранить задачу / подтвердить</span>
-          <div class="shortcut-keys"><span class="badge-key">Enter</span></div>
-
-          <span class="shortcut-label">Редактировать задачу</span>
-          <div class="shortcut-keys"><span class="shortcut-label">2x клик</span></div>
-
-          <span class="shortcut-label">Снять фокус / закрыть окно</span>
-          <div class="shortcut-keys"><span class="badge-key">Esc</span></div>
-
-          <span class="shortcut-label">Открыть справку по клавишам</span>
-          <div class="shortcut-keys"><span class="badge-key">?</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast Container -->
-  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
-
-  <!-- Scripts -->
+  <!-- App script -->
   <script type="module" src="js/app.js"></script>
 </body>
 </html>

@@ -1,65 +1,53 @@
 /* ==========================================================================
-   WORKBENCH UI — DESIGN TOKENS (BASED ON NOTION SPECIFICATION)
-   Standard: «Quiet Workbench» · Monochrome & Deep Obsidian
+   MINIMALIST TOKENS — PURE BLACK & MONOCHROME
+   Clean, refined, distraction-free
    ========================================================================== */
 
 :root {
-  /* Surfaces & Canvas */
-  --wb-canvas: #080808;
-  --wb-surface: #121215;
-  --wb-surface-raised: #18181c;
-  --wb-surface-overlay: #1e1e23;
-  --wb-surface-hover: #232329;
+  /* Canvas & Surfaces */
+  --bg: #000000;
+  --surface: #0c0c0e;
+  --surface-hover: #141417;
+  --surface-raised: #1a1a1e;
   
-  /* Borders & Dividers (Strict 1px, zero diffuse shadows) */
-  --wb-border: #222226;
-  --wb-border-subtle: #1a1a1e;
-  --wb-border-focus: #3e3e46;
-  --wb-border-active: #5c5c66;
+  /* Borders */
+  --border: #18181b;
+  --border-light: #242429;
+  --border-focus: #383840;
 
   /* Typography Colors */
-  --wb-text-primary: #e5e5e5;
-  --wb-text-secondary: #818181;
-  --wb-text-faint: #4c4c54;
-  --wb-text-eyebrow: #8c8c8c;
-  --wb-text-inverse: #171717;
+  --text-main: #f0f0f3;
+  --text-secondary: #7e7e88;
+  --text-muted: #4e4e56;
+  --text-inverse: #000000;
 
-  /* Actions & Accents */
-  --wb-primary-bg: #e6e6e4;
-  --wb-primary-text: #171717;
-  --wb-primary-hover: #ffffff;
-  
-  --wb-secondary-bg: #222226;
-  --wb-secondary-text: #dddddd;
-  --wb-secondary-hover: #2c2c32;
+  /* Accent Buttons */
+  --btn-primary-bg: #ffffff;
+  --btn-primary-text: #000000;
+  --btn-primary-hover: #e5e5e8;
 
-  --wb-danger-text: #d29393;
-  --wb-danger-hover-bg: rgba(210, 147, 147, 0.08);
+  --btn-secondary-bg: #141417;
+  --btn-secondary-border: #222226;
+  --btn-secondary-text: #cccccc;
+  --btn-secondary-hover: #1c1c20;
 
-  --wb-success-text: #8cd69e;
-  --wb-success-dim: rgba(140, 214, 158, 0.12);
+  --danger-color: #e06c75;
+  --danger-hover-bg: rgba(224, 108, 117, 0.1);
 
-  --wb-priority-p1: #d89090;
-  --wb-priority-p1-bg: rgba(216, 144, 144, 0.1);
-  --wb-priority-p2: #d6b880;
-  --wb-priority-p2-bg: rgba(214, 184, 128, 0.1);
-  --wb-priority-p3: #7e9bb5;
-  --wb-priority-p3-bg: rgba(126, 155, 181, 0.1);
+  /* Priorities */
+  --priority-high: #e06c75;
+  --priority-high-bg: rgba(224, 108, 117, 0.12);
+  --priority-med: #d19a66;
+  --priority-med-bg: rgba(209, 154, 102, 0.12);
+  --priority-low: #61afef;
+  --priority-low-bg: rgba(97, 175, 239, 0.12);
 
-  /* Geometry & Micro-radiuses (Strictly 2–4px) */
-  --wb-radius-sm: 2px;
-  --wb-radius-md: 3px;
-  --wb-radius-lg: 4px;
+  /* Radiuses */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
 
   /* Typography */
-  --wb-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --wb-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-
-  /* Header & Heights */
-  --wb-header-h: 52px;
-  --wb-toolbar-h: 44px;
-
-  /* Grid spacing */
-  --wb-dot-grid: radial-gradient(#1f1f24 0.85px, transparent 0.85px);
-  --wb-dot-grid-size: 20px 20px;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", -system-ui, sans-serif;
+  --font-mono: -apple-system-ui-monospace, "SF Mono", "Menlo", monospace;
 }

@@ -1,20 +1,17 @@
 /**
- * WORKBENCH TASK REGISTRY // CORE APPLICATION CONTROLLER
- * Compliant with Notion Workbench UI Design Standard
+ * MINIMALIST TASK APP
+ * Clean reactive controller, zero bloat, full feature set.
  */
 
 import { Storage } from './storage.js';
 
-class WorkbenchApp {
+class TodoApp {
   constructor() {
-    this.tasks = Storage.loadTasks();
-    this.currentFilter = 'all'; // all | pending | completed
-    this.categoryFilter = 'all';
+    this.tasks = Storage.load();
+    this.filter = 'all'; // all | pending | completed
     this.searchQuery = '';
-    this.sortBy = 'date-desc';
-    this.editingTaskId = null;
-    this.lastDeletedTask = null;
-    this.undoTimeout = null;
+    this.editingId = null;
+    this.lastDeleted = null;
 
     this.cacheDOM();
     this.bindEvents();
@@ -22,57 +19,42 @@ class WorkbenchApp {
   }
 
   cacheDOM() {
-    // Form & Input
+    // Header
+    this.activeCountBadge = document.getElementById('activeCountBadge');
+
+    // Form
     this.taskForm = document.getElementById('taskForm');
     this.taskInput = document.getElementById('taskInput');
     this.prioritySelect = document.getElementById('prioritySelect');
     this.categorySelect = document.getElementById('categorySelect');
     this.dueDateInput = document.getElementById('dueDateInput');
 
-    // Metrics
-    this.metricTotal = document.getElementById('metricTotal');
-    this.metricActive = document.getElementById('metricActive');
-    this.metricCompleted = document.getElementById('metricCompleted');
-    this.metricRate = document.getElementById('metricRate');
-    this.metricBarFill = document.getElementById('metricBarFill');
-
-    // Tabs & Filters
+    // Filters & Search
     this.tabAll = document.getElementById('tabAll');
     this.tabPending = document.getElementById('tabPending');
     this.tabCompleted = document.getElementById('tabCompleted');
     this.countAll = document.getElementById('countAll');
     this.countPending = document.getElementById('countPending');
     this.countCompleted = document.getElementById('countCompleted');
-
-    this.filterCategory = document.getElementById('filterCategory');
-    this.sortSelect = document.getElementById('sortSelect');
     this.searchInput = document.getElementById('searchInput');
 
-    // List & Container
+    // List & Empty
     this.taskList = document.getElementById('taskList');
-    this.emptyState = document.getElementById('emptyState');
+    this.emptyBox = document.getElementById('emptyBox');
 
-    // Batch Actions
+    // Footer
+    this.remainingSummary = document.getElementById('remainingSummary');
     this.clearCompletedBtn = document.getElementById('clearCompletedBtn');
-    this.exportBtn = document.getElementById('exportBtn');
-    this.importBtn = document.getElementById('importBtn');
-    this.fileInput = document.getElementById('fileInput');
-    this.resetBtn = document.getElementById('resetBtn');
-
-    // Modal
-    this.shortcutsModal = document.getElementById('shortcutsModal');
-    this.closeModalBtn = document.getElementById('closeModalBtn');
-    this.openShortcutsBtn = document.getElementById('openShortcutsBtn');
 
     // Toast
-    this.toastContainer = document.getElementById('toastContainer');
+    this.toastWrap = document.getElementById('toastWrap');
   }
 
   bindEvents() {
     // Add task
     this.taskForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      this.handleAddTask();
+      this.addTask();
     });
 
     // Filter tabs
@@ -80,101 +62,42 @@ class WorkbenchApp {
     this.tabPending.addEventListener('click', () => this.setFilter('pending'));
     this.tabCompleted.addEventListener('click', () => this.setFilter('completed'));
 
-    // Category & Sort & Search
-    this.filterCategory.addEventListener('change', (e) => {
-      this.categoryFilter = e.target.value;
-      this.render();
-    });
-
-    this.sortSelect.addEventListener('change', (e) => {
-      this.sortBy = e.target.value;
-      this.render();
-    });
-
+    // Search
     this.searchInput.addEventListener('input', (e) => {
       this.searchQuery = e.target.value.trim().toLowerCase();
       this.render();
     });
 
-    // Batch & Utility actions
-    if (this.clearCompletedBtn) {
-      this.clearCompletedBtn.addEventListener('click', () => this.clearCompleted());
-    }
+    // Clear completed
+    this.clearCompletedBtn.addEventListener('click', () => this.clearCompleted());
 
-    if (this.exportBtn) {
-      this.exportBtn.addEventListener('click', () => Storage.exportJSON(this.tasks));
-    }
+    // Task list delegation
+    this.taskList.addEventListener('click', (e) => this.handleListClick(e));
+    this.taskList.addEventListener('dblclick', (e) => this.handleListDblClick(e));
 
-    if (this.importBtn && this.fileInput) {
-      this.importBtn.addEventListener('click', () => this.fileInput.click());
-      this.fileInput.addEventListener('change', (e) => this.handleFileImport(e));
-    }
-
-    if (this.resetBtn) {
-      this.resetBtn.addEventListener('click', () => {
-        if (confirm('Сбросить список к эталонным задачам Workbench?')) {
-          this.tasks = Storage.resetToSeed();
-          this.render();
-          this.showToast('Данные сброшены к исходным');
-        }
-      });
-    }
-
-    // Modal
-    if (this.openShortcutsBtn && this.shortcutsModal) {
-      this.openShortcutsBtn.addEventListener('click', () => this.toggleModal(true));
-      this.closeModalBtn.addEventListener('click', () => this.toggleModal(false));
-      this.shortcutsModal.addEventListener('click', (e) => {
-        if (e.target === this.shortcutsModal) this.toggleModal(false);
-      });
-    }
-
-    // Global Keyboard Shortcuts
+    // Global escape key
     window.addEventListener('keydown', (e) => {
-      const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
-      const isInput = activeTag === 'input' || activeTag === 'select' || activeTag === 'textarea';
-
-      if (!isInput) {
-        if (e.key === 'n' || e.key === 'N' || e.key === '/') {
-          e.preventDefault();
-          this.taskInput.focus();
-        } else if (e.key === '?') {
-          e.preventDefault();
-          this.toggleModal(true);
-        }
-      }
-
       if (e.key === 'Escape') {
-        if (this.shortcutsModal && this.shortcutsModal.classList.contains('open')) {
-          this.toggleModal(false);
-        } else if (isInput) {
-          document.activeElement.blur();
-        }
-        if (this.editingTaskId) {
-          this.editingTaskId = null;
+        if (this.editingId) {
+          this.editingId = null;
           this.render();
         }
       }
     });
-
-    // Task list event delegation (click, double click)
-    this.taskList.addEventListener('click', (e) => this.handleListClick(e));
-    this.taskList.addEventListener('dblclick', (e) => this.handleListDblClick(e));
   }
 
-  handleAddTask() {
+  addTask() {
     const title = this.taskInput.value.trim();
     if (!title) return;
 
     const newTask = {
-      id: 'task-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 4),
+      id: 't-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 3),
       title: title,
       completed: false,
-      priority: this.prioritySelect.value,
-      category: this.categorySelect.value,
+      priority: this.prioritySelect.value !== 'none' ? this.prioritySelect.value : null,
+      category: this.categorySelect.value !== 'none' ? this.categorySelect.value : null,
       dueDate: this.dueDateInput.value || null,
-      createdAt: new Date().toISOString(),
-      completedAt: null
+      createdAt: new Date().toISOString()
     };
 
     this.tasks.unshift(newTask);
@@ -183,7 +106,6 @@ class WorkbenchApp {
 
     this.taskInput.value = '';
     this.taskInput.focus();
-    this.showToast(`Задача добавлена [${newTask.priority.toUpperCase()}]`);
   }
 
   handleListClick(e) {
@@ -194,18 +116,18 @@ class WorkbenchApp {
     const taskId = taskItem.dataset.id;
 
     // Checkbox toggle
-    if (target.classList.contains('task-checkbox-input')) {
-      this.toggleTaskCompletion(taskId);
+    if (target.classList.contains('checkbox-native')) {
+      this.toggleTask(taskId);
       return;
     }
 
-    // Delete button
+    // Delete
     if (target.closest('.btn-delete')) {
       this.deleteTask(taskId);
       return;
     }
 
-    // Edit button
+    // Edit
     if (target.closest('.btn-edit')) {
       this.startEditing(taskId);
       return;
@@ -214,19 +136,16 @@ class WorkbenchApp {
 
   handleListDblClick(e) {
     const taskItem = e.target.closest('.task-item');
-    if (taskItem && !e.target.closest('button') && !e.target.closest('.task-checkbox-wrap')) {
-      const taskId = taskItem.dataset.id;
-      this.startEditing(taskId);
+    if (taskItem && !e.target.closest('button') && !e.target.closest('.checkbox-wrap')) {
+      this.startEditing(taskItem.dataset.id);
     }
   }
 
-  toggleTaskCompletion(taskId) {
+  toggleTask(taskId) {
     const task = this.tasks.find(t => t.id === taskId);
     if (!task) return;
 
     task.completed = !task.completed;
-    task.completedAt = task.completed ? new Date().toISOString() : null;
-    
     this.save();
     this.render();
   }
@@ -236,50 +155,49 @@ class WorkbenchApp {
     if (index === -1) return;
 
     const [deleted] = this.tasks.splice(index, 1);
-    this.lastDeletedTask = { task: deleted, index: index };
-    
+    this.lastDeleted = { task: deleted, index: index };
+
     this.save();
     this.render();
 
-    this.showUndoToast(`Удалено: "${this.escapeHTML(deleted.title)}"`, () => {
+    this.showToast('Задача удалена', () => {
       this.undoDelete();
     });
   }
 
   undoDelete() {
-    if (!this.lastDeletedTask) return;
-    this.tasks.splice(this.lastDeletedTask.index, 0, this.lastDeletedTask.task);
-    this.lastDeletedTask = null;
+    if (!this.lastDeleted) return;
+    this.tasks.splice(this.lastDeleted.index, 0, this.lastDeleted.task);
+    this.lastDeleted = null;
     this.save();
     this.render();
-    this.showToast('Действие отменено');
   }
 
   startEditing(taskId) {
-    this.editingTaskId = taskId;
+    this.editingId = taskId;
     this.render();
-    const editInput = this.taskList.querySelector(`[data-id="${taskId}"] .task-edit-input`);
-    if (editInput) {
-      editInput.focus();
-      editInput.setSelectionRange(editInput.value.length, editInput.value.length);
-      
-      const saveEdit = () => {
-        const val = editInput.value.trim();
+
+    const input = this.taskList.querySelector(`[data-id="${taskId}"] .edit-input`);
+    if (input) {
+      input.focus();
+      input.setSelectionRange(input.value.length, input.value.length);
+
+      const finishEdit = () => {
+        const val = input.value.trim();
         if (val) {
           const task = this.tasks.find(t => t.id === taskId);
           if (task) task.title = val;
           this.save();
         }
-        this.editingTaskId = null;
+        this.editingId = null;
         this.render();
       };
 
-      editInput.addEventListener('blur', saveEdit, { once: true });
-      editInput.addEventListener('keydown', (ev) => {
-        if (ev.key === 'Enter') {
-          editInput.blur();
-        } else if (ev.key === 'Escape') {
-          this.editingTaskId = null;
+      input.addEventListener('blur', finishEdit, { once: true });
+      input.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter') input.blur();
+        if (ev.key === 'Escape') {
+          this.editingId = null;
           this.render();
         }
       });
@@ -287,166 +205,137 @@ class WorkbenchApp {
   }
 
   clearCompleted() {
-    const count = this.tasks.filter(t => t.completed).length;
-    if (count === 0) return;
+    const hasCompleted = this.tasks.some(t => t.completed);
+    if (!hasCompleted) return;
 
-    if (confirm(`Удалить выполненные задачи (${count})?`)) {
-      this.tasks = this.tasks.filter(t => !t.completed);
-      this.save();
-      this.render();
-      this.showToast(`Очищено ${count} выполненных задач`);
-    }
-  }
-
-  async handleFileImport(e) {
-    const file = e.target.files && e.target.files[0];
-    if (!file) return;
-
-    try {
-      const imported = await Storage.importJSON(file);
-      this.tasks = imported;
-      this.save();
-      this.render();
-      this.showToast(`Импортировано задач: ${imported.length}`);
-    } catch (err) {
-      alert('Ошибка при импорте JSON: ' + err.message);
-    } finally {
-      this.fileInput.value = '';
-    }
+    this.tasks = this.tasks.filter(t => !t.completed);
+    this.save();
+    this.render();
   }
 
   setFilter(filter) {
-    this.currentFilter = filter;
+    this.filter = filter;
     this.render();
   }
 
   save() {
-    Storage.saveTasks(this.tasks);
+    Storage.save(this.tasks);
   }
 
   getFilteredTasks() {
     return this.tasks.filter(task => {
-      // Status filter
-      if (this.currentFilter === 'pending' && task.completed) return false;
-      if (this.currentFilter === 'completed' && !task.completed) return false;
+      if (this.filter === 'pending' && task.completed) return false;
+      if (this.filter === 'completed' && !task.completed) return false;
 
-      // Category filter
-      if (this.categoryFilter !== 'all' && task.category !== this.categoryFilter) return false;
-
-      // Search query
       if (this.searchQuery) {
-        const matchesTitle = task.title.toLowerCase().includes(this.searchQuery);
-        const matchesCategory = task.category.toLowerCase().includes(this.searchQuery);
-        const matchesPriority = task.priority.toLowerCase().includes(this.searchQuery);
-        if (!matchesTitle && !matchesCategory && !matchesPriority) return false;
+        const titleMatch = task.title.toLowerCase().includes(this.searchQuery);
+        const catMatch = task.category && task.category.toLowerCase().includes(this.searchQuery);
+        if (!titleMatch && !catMatch) return false;
       }
 
       return true;
-    }).sort((a, b) => {
-      if (this.sortBy === 'date-desc') {
-        return new Date(b.createdAt) - new Date(a.createdAt);
-      }
-      if (this.sortBy === 'date-asc') {
-        return new Date(a.createdAt) - new Date(b.createdAt);
-      }
-      if (this.sortBy === 'priority') {
-        const pOrder = { p1: 1, p2: 2, p3: 3 };
-        return (pOrder[a.priority] || 4) - (pOrder[b.priority] || 4);
-      }
-      if (this.sortBy === 'alpha') {
-        return a.title.localeCompare(b.title);
-      }
-      return 0;
     });
   }
 
   render() {
-    // 1. Update Metrics
     const total = this.tasks.length;
     const completed = this.tasks.filter(t => t.completed).length;
     const pending = total - completed;
-    const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-    this.metricTotal.textContent = total;
-    this.metricActive.textContent = pending;
-    this.metricCompleted.textContent = completed;
-    this.metricRate.textContent = `${rate}%`;
-    this.metricBarFill.style.width = `${rate}%`;
-
-    // 2. Update Tab Counts & Active States
+    // Header & counters
+    this.activeCountBadge.textContent = `${pending} активных`;
     this.countAll.textContent = total;
     this.countPending.textContent = pending;
     this.countCompleted.textContent = completed;
+    this.remainingSummary.textContent = `Осталось задач: ${pending}`;
 
-    this.tabAll.classList.toggle('active', this.currentFilter === 'all');
-    this.tabPending.classList.toggle('active', this.currentFilter === 'pending');
-    this.tabCompleted.classList.toggle('active', this.currentFilter === 'completed');
+    // Tabs
+    this.tabAll.classList.toggle('active', this.filter === 'all');
+    this.tabPending.classList.toggle('active', this.filter === 'pending');
+    this.tabCompleted.classList.toggle('active', this.filter === 'completed');
 
-    // 3. Render List
+    // Clear completed button state
+    this.clearCompletedBtn.style.visibility = completed > 0 ? 'visible' : 'hidden';
+
+    // List rendering
     const filtered = this.getFilteredTasks();
 
     if (filtered.length === 0) {
       this.taskList.style.display = 'none';
-      this.emptyState.style.display = 'flex';
-      
-      const emptySubtitle = this.emptyState.querySelector('.empty-subtitle');
+      this.emptyBox.style.display = 'flex';
+      const emptyDesc = this.emptyBox.querySelector('.empty-desc');
       if (this.searchQuery) {
-        emptySubtitle.textContent = `По запросу «${this.searchQuery}» ничего не найдено`;
-      } else if (this.currentFilter === 'completed') {
-        emptySubtitle.textContent = 'Нет выполненных задач';
-      } else if (this.currentFilter === 'pending') {
-        emptySubtitle.textContent = 'Все задачи выполнены!';
+        emptyDesc.textContent = `По запросу «${this.searchQuery}» ничего не найдено`;
+      } else if (this.filter === 'completed') {
+        emptyDesc.textContent = 'Нет выполненных задач';
+      } else if (this.filter === 'pending') {
+        emptyDesc.textContent = 'Все задачи выполнены';
       } else {
-        emptySubtitle.textContent = 'Добавьте первую задачу с помощью формы выше или нажмите N';
+        emptyDesc.textContent = 'Добавьте новую задачу с помощью поля выше';
       }
     } else {
       this.taskList.style.display = 'flex';
-      this.emptyState.style.display = 'none';
-
-      this.taskList.innerHTML = filtered.map(task => this.renderTaskItem(task)).join('');
+      this.emptyBox.style.display = 'none';
+      this.taskList.innerHTML = filtered.map(task => this.renderTask(task)).join('');
     }
   }
 
-  renderTaskItem(task) {
-    const isEditing = this.editingTaskId === task.id;
-    const priorityLabel = task.priority ? task.priority.toUpperCase() : 'P2';
-    const formattedDate = task.dueDate ? this.formatDate(task.dueDate) : null;
-    const createdTime = this.formatRelativeTime(task.createdAt);
+  renderTask(task) {
+    const isEditing = this.editingId === task.id;
+    const priorityClass = task.priority ? `p-${task.priority}` : '';
+    const priorityLabels = { high: 'Высокий', med: 'Средний', low: 'Низкий' };
 
     return `
       <div class="task-item ${task.completed ? 'completed' : ''}" data-id="${task.id}">
-        <div class="task-checkbox-wrap">
-          <input type="checkbox" class="task-checkbox-input" ${task.completed ? 'checked' : ''} aria-label="Отметить выполненной">
-          <div class="task-checkbox-custom">
-            <svg viewBox="0 0 12 12" fill="none">
-              <path d="M2.5 6L5 8.5L9.5 3.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+        <div class="checkbox-wrap">
+          <input type="checkbox" class="checkbox-native" ${task.completed ? 'checked' : ''} aria-label="Отметить выполненной">
+          <div class="checkbox-custom">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 7.5L5.5 10L11 4"/>
             </svg>
           </div>
         </div>
 
-        <div class="task-content">
+        <div class="task-main">
           ${isEditing ? `
-            <input type="text" class="task-edit-input" value="${this.escapeHTML(task.title)}">
+            <input type="text" class="edit-input" value="${this.escapeHTML(task.title)}">
           ` : `
-            <div class="task-title" title="Двойной клик для редактирования">${this.escapeHTML(task.title)}</div>
+            <div class="task-title">${this.escapeHTML(task.title)}</div>
           `}
           
           <div class="task-meta">
-            <span class="meta-pill ${task.priority}">${priorityLabel}</span>
-            <span class="meta-pill">${this.escapeHTML(task.category || 'General')}</span>
-            ${formattedDate ? `<span class="meta-pill mono">📅 ${formattedDate}</span>` : ''}
-            <span class="mono" style="color: var(--wb-text-faint);">${createdTime}</span>
+            ${task.priority ? `
+              <span class="tag-badge ${priorityClass}">
+                ${priorityLabels[task.priority] || task.priority}
+              </span>
+            ` : ''}
+
+            ${task.category ? `
+              <span class="tag-badge">
+                ${this.escapeHTML(task.category)}
+              </span>
+            ` : ''}
+
+            ${task.dueDate ? `
+              <span class="tag-badge">
+                <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2"/>
+                  <path d="M16 2v4M8 2v4M3 10h18"/>
+                </svg>
+                ${this.formatDate(task.dueDate)}
+              </span>
+            ` : ''}
           </div>
         </div>
 
         <div class="task-actions">
-          <button type="button" class="btn-ghost btn-edit" title="Редактировать [Enter]" aria-label="Редактировать">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <button type="button" class="btn-icon btn-edit" title="Редактировать" aria-label="Редактировать">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
             </svg>
           </button>
-          <button type="button" class="btn-danger-ghost btn-delete" title="Удалить задачу" aria-label="Удалить">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <button type="button" class="btn-icon btn-delete delete" title="Удалить" aria-label="Удалить">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
             </svg>
           </button>
@@ -457,66 +346,35 @@ class WorkbenchApp {
 
   formatDate(dateStr) {
     if (!dateStr) return '';
-    const [year, month, day] = dateStr.split('-');
-    return `${day}.${month}.${year}`;
-  }
-
-  formatRelativeTime(isoStr) {
-    if (!isoStr) return '';
-    const diffMs = Date.now() - new Date(isoStr).getTime();
-    const diffMin = Math.floor(diffMs / 60000);
-    if (diffMin < 1) return 'только что';
-    if (diffMin < 60) return `${diffMin} мин назад`;
-    const diffHours = Math.floor(diffMin / 60);
-    if (diffHours < 24) return `${diffHours} ч назад`;
-    const diffDays = Math.floor(diffHours / 24);
-    return `${diffDays} д назад`;
-  }
-
-  toggleModal(isOpen) {
-    if (this.shortcutsModal) {
-      this.shortcutsModal.classList.toggle('open', isOpen);
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      return `${parts[2]}.${parts[1]}.${parts[0].slice(-2)}`;
     }
+    return dateStr;
   }
 
-  showToast(message) {
-    if (!this.toastContainer) return;
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.textContent = message;
-    this.toastContainer.appendChild(toast);
-    setTimeout(() => {
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateY(8px)';
-      toast.style.transition = 'all 0.2s ease';
-      setTimeout(() => toast.remove(), 200);
-    }, 2400);
-  }
+  showToast(text, onUndo) {
+    if (!this.toastWrap) return;
+    this.toastWrap.innerHTML = '';
 
-  showUndoToast(message, onUndo) {
-    if (!this.toastContainer) return;
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.innerHTML = `
-      <span>${message}</span>
-      <button type="button" class="toast-undo-btn">Вернуть [Undo]</button>
+    const pill = document.createElement('div');
+    pill.className = 'toast-pill';
+    pill.innerHTML = `
+      <span>${text}</span>
+      ${onUndo ? `<button type="button" class="btn-toast-undo">Отменить</button>` : ''}
     `;
-    const undoBtn = toast.querySelector('.toast-undo-btn');
-    undoBtn.addEventListener('click', () => {
-      onUndo();
-      toast.remove();
-    });
 
-    this.toastContainer.appendChild(toast);
+    if (onUndo) {
+      pill.querySelector('.btn-toast-undo').addEventListener('click', () => {
+        onUndo();
+        pill.remove();
+      });
+    }
 
+    this.toastWrap.appendChild(pill);
     setTimeout(() => {
-      if (toast.parentNode) {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateY(8px)';
-        toast.style.transition = 'all 0.2s ease';
-        setTimeout(() => toast.remove(), 200);
-      }
-    }, 4500);
+      if (pill.parentNode) pill.remove();
+    }, 4000);
   }
 
   escapeHTML(str) {
@@ -530,7 +388,6 @@ class WorkbenchApp {
   }
 }
 
-// Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
-  window.workbenchApp = new WorkbenchApp();
+  window.todoApp = new TodoApp();
 });
